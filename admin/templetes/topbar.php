@@ -15,7 +15,7 @@ $pg = query("SELECT * FROM pegawai WHERE is_delete=1 AND id_pegawai = $idp")[0];
             aria-haspopup="true" aria-expanded="false">
             <span class="mr-2 d-none d-lg-inline text-gray-600 small"><b>[<?=$pg['role']?>]</b>
                 <?=$pg['nm_pegawai']?></span>
-            <img class="img-profile rounded-circle" src="../assets/img/default.jpg">
+            <img class="img-profile rounded-circle" src="../assets/img/profile/<?=$pg['foto']?>">
         </a>
         <!-- Dropdown - User Information -->
         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
