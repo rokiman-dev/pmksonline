@@ -7,9 +7,36 @@ if (!isset($_SESSION["admin"])){
 
 $page = "pmks";
 date_default_timezone_set('Asia/Jakarta');
+require_once '../config.php';
+require_once "../functions.php";
 include('templetes/sidebar.php');
 include('templetes/topbar.php');
-require_once "../functions.php";
+
+
+if (isset($_POST['tambah'])) {
+  $nama        = $_POST['nm_pmks'];
+  $alamat      = $_POST['alamat'];
+  $id_kec      = $_POST['id_kec'];
+  $no_telepon  = $_POST['no_telepon'];
+  $id_kat      = $_POST['id_kat_pmks'];
+  $id_program  = $_POST['id_program'];
+  $creator     = $_POST['id_pegawai'];
+  $time_input  = $_POST['time_input'];
+  $is_delete   = $_POST['is_delete'];
+  $status      = $_POST['status'];
+
+  $query = "INSERT INTO pmks 
+    (nm_pmks, alamat, id_kec, no_telepon, id_kat_pmks, id_program, creator, time_input, is_delete, status)
+    VALUES 
+    ('$nama', '$alamat', '$id_kec', '$no_telepon', '$id_kat', '$id_program', '$creator', '$time_input', '$is_delete', '$status')";
+
+  if (mysqli_query($koneksi, $query)) {
+    echo "<script>alert('Data berhasil ditambahkan'); window.location.href='pmks_trial.php';</script>";
+    exit;
+  } else {
+    echo "<script>alert('Gagal menambahkan data: " . mysqli_error($koneksi) . "');</script>";
+  }
+}
 
 $id_pegawai = $_SESSION['id_pegawai'];
 $pegawai = query("SELECT id_pegawai FROM pegawai WHERE id_pegawai='$id_pegawai'")[0];
@@ -23,7 +50,6 @@ $awaldata = ($jml_DataHalaman * $pageAktif) - $jml_DataHalaman;
 
 $pmks = query("SELECT 
     a.id_pmks,
-    a.nik_pmks,
     a.nm_pmks,
     a.alamat,
     d.nm_kec AS kecamatan,
@@ -60,14 +86,6 @@ if (isset($_POST["approve"])) {
     }
 }
 
-if (isset($_POST["tambah"])){ 
-    if(tambahDataPmks($_POST) > 0){
-        echo "<script>alert('Data berhasil ditambahkan'); location.href='pmks.php';</script>";
-    } else {
-        echo "<script>alert('Data gagal ditambahkan'); location.href='pmks.php';</script>";
-    }
-}
-
 if (isset($_POST["edit"])){ 
     if(editDataPmks($_POST) > 0){
         echo "<script>alert('Data berhasil diubah'); location.href='pmks.php';</script>";
@@ -87,20 +105,18 @@ if (isset($_POST["edit"])){
                 Tambah PMKS
             </button>
         </div>
-
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered" width="100%" cellspacing="0">
                     <thead class="table-dark">
                         <tr>
                             <th class="text-center">No</th>
-                            <th class="text-center">NIK</th>
                             <th class="text-center">Nama</th>
                             <th class="text-center">Alamat</th>
-                            <th class="text-center">Kecamatan</th> <!-- ✅ Ditambahkan -->
+                            <th class="text-center">Kecamatan</th>
                             <th class="text-center">No Telepon</th>
                             <th class="text-center">Jenis Akses</th>
-                            <th class="text-center">Program</th>
+                            <th class="text-center">Sub Menu</th>
                             <th class="text-center">Tanggal Akses</th>
                             <th class="text-center">Status</th>
                             <th class="text-center">Aksi</th>
@@ -111,7 +127,6 @@ if (isset($_POST["edit"])){
                         <?php foreach ($pmks as $row): ?>
                         <tr>
                             <td class="text-center"><?= $i++; ?></td>
-                            <td class="text-center"><?= $row['nik_pmks']; ?></td>
                             <td><?= $row['nm_pmks']; ?></td>
                             <td><?= $row['alamat']; ?></td>
                             <td><?= $row['kecamatan']; ?></td>
@@ -145,39 +160,6 @@ if (isset($_POST["edit"])){
                                 </form>
                             </td>
                         </tr>
-
-                        <!-- Modal Edit -->
-                        <div class="modal fade" id="modalEdit<?= $row['id_pmks']; ?>" tabindex="-1" role="dialog">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <form method="POST">
-                                        <div class="modal-header bg-warning text-white">
-                                            <h5 class="modal-title">Edit PMKS</h5>
-                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <input type="hidden" name="id_pmks" value="<?= $row['id_pmks']; ?>">
-                                            <div class="form-group">
-                                                <label>NIK</label>
-                                                <input type="text" name="nik_pmks" class="form-control"
-                                                    value="<?= $row['nik_pmks']; ?>">
-                                                <label>Nama</label>
-                                                <input type="text" name="nm_pmks" class="form-control"
-                                                    value="<?= $row['nm_pmks']; ?>">
-                                                <label>No Telepon</label>
-                                                <input type="text" name="no_telepon" class="form-control"
-                                                    value="<?= $row['no_telepon']; ?>">
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="submit" name="edit" class="btn btn-warning">Simpan</button>
-                                            <button type="button" class="btn btn-secondary"
-                                                data-dismiss="modal">Batal</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
@@ -214,21 +196,90 @@ if (isset($_POST["edit"])){
                     <h5 class="modal-title">Tambah PMKS</h5>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
+
                 <div class="modal-body">
                     <div class="form-group">
-                        <label>NIK</label>
-                        <input type="text" name="nik_pmks" class="form-control" required>
                         <label>Nama</label>
                         <input type="text" name="nm_pmks" class="form-control" required>
+
+                        <label>Alamat</label>
+                        <input type="text" name="alamat" class="form-control" required>
+
+                        <label>Kecamatan</label>
+                        <select name="id_kec" class="form-control" required>
+                            <option value="">-- Pilih Kecamatan --</option>
+                            <?php
+              $kecamatan = query("SELECT * FROM kecamatan WHERE is_delete = 1");
+              foreach ($kecamatan as $kec) {
+                  echo "<option value='{$kec['id_kec']}'>{$kec['nm_kec']}</option>";
+              }
+              ?>
+                        </select>
+
                         <label>No Telepon</label>
                         <input type="text" name="no_telepon" class="form-control">
+
+                        <label>Jenis Akses</label>
+                        <select name="id_kat_pmks" class="form-control" required>
+                            <option value="">-- Pilih Jenis Akses --</option>
+                            <?php
+              $kat = query("SELECT * FROM kat_pmks WHERE is_delete = 1");
+              foreach ($kat as $k) {
+                  echo "<option value='{$k['id_kat_pmks']}'>{$k['nm_kat']}</option>";
+              }
+              ?>
+                        </select>
+
+                        <label>Sub Menu</label>
+                        <select name="id_program" class="form-control" required>
+                            <option value="">-- Pilih Program Bantuan --</option>
+                            <?php
+              $prog = query("SELECT * FROM program_bantuan WHERE is_delete = 1");
+              foreach ($prog as $p) {
+                  echo "<option value='{$p['id_program']}'>{$p['nm_program']}</option>";
+              }
+              ?>
+                        </select>
+
+                        <!-- Hidden input -->
                         <input type="hidden" name="id_pegawai" value="<?= $_SESSION['id_pegawai'] ?>">
                         <input type="hidden" name="time_input" value="<?= date('Y-m-d H:i:s') ?>">
                         <input type="hidden" name="is_delete" value="1">
+                        <input type="hidden" name="status" value="Menunggu">
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" name="tambah" class="btn btn-primary">Tambah</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Edit -->
+<div class="modal fade" id="modalEdit<?= $row['id_pmks']; ?>" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form method="POST">
+                <div class="modal-header bg-warning text-white">
+                    <h5 class="modal-title">Edit PMKS</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id_pmks" value="<?= $row['id_pmks']; ?>">
+                    <div class="form-group">
+                        <label>NIK</label>
+                        <input type="text" name="nik_pmks" class="form-control" value="<?= $row['nik_pmks']; ?>">
+                        <label>Nama</label>
+                        <input type="text" name="nm_pmks" class="form-control" value="<?= $row['nm_pmks']; ?>">
+                        <label>No Telepon</label>
+                        <input type="text" name="no_telepon" class="form-control" value="<?= $row['no_telepon']; ?>">
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" name="tambah" class="btn btn-primary">Tambah</button>
+                    <button type="submit" name="edit" class="btn btn-warning">Simpan</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
                 </div>
             </form>
