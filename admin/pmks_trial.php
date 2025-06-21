@@ -12,7 +12,7 @@ require_once "../functions.php";
 include('templetes/sidebar.php');
 include('templetes/topbar.php');
 
-
+// TAMBAH PMKS
 if (isset($_POST['tambah'])) {
   $nama        = $_POST['nm_pmks'];
   $alamat      = $_POST['alamat'];
@@ -70,9 +70,9 @@ $pmks = query("SELECT
 
 if (isset($_POST["hapus"])) {
     if (hapusDataPmks($_POST) > 0) {
-        echo "<script>alert('Data berhasil dihapus'); location.href='pmks.php';</script>";
+        echo "<script>alert('Data berhasil dihapus'); location.href='pmks_trial.php';</script>";
     } else {
-        echo "<script>alert('Data gagal dihapus'); location.href='pmks.php';</script>";
+        echo "<script>alert('Data gagal dihapus'); location.href='pmks_trial.php';</script>";
     }
 }
 
@@ -86,13 +86,31 @@ if (isset($_POST["approve"])) {
     }
 }
 
-if (isset($_POST["edit"])){ 
-    if(editDataPmks($_POST) > 0){
-        echo "<script>alert('Data berhasil diubah'); location.href='pmks.php';</script>";
-    } else {
-        echo "<script>alert('Data gagal diubah'); location.href='pmks.php';</script>";
-    }
+if (isset($_POST['edit'])) {
+  $id_pmks     = $_POST['id_pmks'];
+  $nm_pmks     = $_POST['nm_pmks'];
+  $alamat      = $_POST['alamat'];
+  $id_kec      = $_POST['id_kec'];
+  $no_telepon  = $_POST['no_telepon'];
+  $id_kat_pmks = $_POST['id_kat_pmks'];
+  $id_program  = $_POST['id_program'];
+
+  $query = "UPDATE pmks SET 
+              nm_pmks = '$nm_pmks',
+              alamat = '$alamat',
+              id_kec = '$id_kec',
+              no_telepon = '$no_telepon',
+              id_kat_pmks = '$id_kat_pmks',
+              id_program = '$id_program'
+            WHERE id_pmks = $id_pmks";
+
+  if (mysqli_query($koneksi, $query)) {
+    echo "<script>alert('Data berhasil diperbarui!'); window.location.href='pmks_trial.php';</script>";
+  } else {
+    echo "<script>alert('Gagal memperbarui data: " . mysqli_error($koneksi) . "');</script>";
+  }
 }
+
 ?>
 
 <!-- Begin Page Content -->
@@ -160,6 +178,76 @@ if (isset($_POST["edit"])){
                                 </form>
                             </td>
                         </tr>
+
+                        <!-- Modal Edit -->
+                        <div class="modal fade" id="modalEdit<?= $row['id_pmks']; ?>" tabindex="-1" role="dialog">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <form method="POST">
+                                        <div class="modal-header bg-warning text-white">
+                                            <h5 class="modal-title">Edit PMKS</h5>
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        </div>
+
+                                        <div class="modal-body">
+                                            <input type="hidden" name="id_pmks" value="<?= $row['id_pmks']; ?>">
+                                            <div class="form-group">
+                                                <label>Nama</label>
+                                                <input type="text" name="nm_pmks" class="form-control"
+                                                    value="<?= $row['nm_pmks']; ?>" required>
+
+                                                <label>Alamat</label>
+                                                <input type="text" name="alamat" class="form-control"
+                                                    value="<?= $row['alamat']; ?>" required>
+
+                                                <label>Kecamatan</label>
+                                                <select name="id_kec" class="form-control" required>
+                                                    <?php
+              $kecamatan = query("SELECT * FROM kecamatan WHERE is_delete = 1");
+              foreach ($kecamatan as $kec) {
+                $selected = $row['id_kec'] == $kec['id_kec'] ? "selected" : "";
+                echo "<option value='{$kec['id_kec']}' $selected>{$kec['nm_kec']}</option>";
+              }
+              ?>
+                                                </select>
+
+                                                <label>No Telepon</label>
+                                                <input type="text" name="no_telepon" class="form-control"
+                                                    value="<?= $row['no_telepon']; ?>">
+
+                                                <label>Jenis Akses</label>
+                                                <select name="id_kat_pmks" class="form-control" required>
+                                                    <?php
+              $kategori = query("SELECT * FROM kat_pmks WHERE is_delete = 1");
+              foreach ($kategori as $kat) {
+                $selected = $row['id_kat_pmks'] == $kat['id_kat_pmks'] ? "selected" : "";
+                echo "<option value='{$kat['id_kat_pmks']}' $selected>{$kat['nm_kat']}</option>";
+              }
+              ?>
+                                                </select>
+
+                                                <label>Sub Menu</label>
+                                                <select name="id_program" class="form-control" required>
+                                                    <?php
+              $programs = query("SELECT * FROM program_bantuan WHERE is_delete = 1");
+              foreach ($programs as $prog) {
+                $selected = $row['id_program'] == $prog['id_program'] ? "selected" : "";
+                echo "<option value='{$prog['id_program']}' $selected>{$prog['nm_program']}</option>";
+              }
+              ?>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button type="submit" name="edit" class="btn btn-warning">Simpan</button>
+                                            <button type="button" class="btn btn-secondary"
+                                                data-dismiss="modal">Batal</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
@@ -258,33 +346,6 @@ if (isset($_POST["edit"])){
     </div>
 </div>
 
-<!-- Modal Edit -->
-<div class="modal fade" id="modalEdit<?= $row['id_pmks']; ?>" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <form method="POST">
-                <div class="modal-header bg-warning text-white">
-                    <h5 class="modal-title">Edit PMKS</h5>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" name="id_pmks" value="<?= $row['id_pmks']; ?>">
-                    <div class="form-group">
-                        <label>NIK</label>
-                        <input type="text" name="nik_pmks" class="form-control" value="<?= $row['nik_pmks']; ?>">
-                        <label>Nama</label>
-                        <input type="text" name="nm_pmks" class="form-control" value="<?= $row['nm_pmks']; ?>">
-                        <label>No Telepon</label>
-                        <input type="text" name="no_telepon" class="form-control" value="<?= $row['no_telepon']; ?>">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" name="edit" class="btn btn-warning">Simpan</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+
 
 <?php include('templetes/footer.php'); ?>
