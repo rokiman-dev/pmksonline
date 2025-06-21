@@ -1,42 +1,29 @@
 <?php
+// laporan_pmks.php
+
 date_default_timezone_set('Asia/Jakarta');
 require_once __DIR__ . '/vendor/autoload.php';
 require_once "functions.php";
 require_once "config.php";
 
-$id = $_GET['id'];
+$pmks = query("SELECT a.*, b.nm_kat AS jenis_akses, c.nm_program AS sub_menu, d.nm_kec AS kecamatan
+               FROM pmks a
+               LEFT JOIN kat_pmks b ON a.id_kat_pmks = b.id_kat_pmks
+               LEFT JOIN program_bantuan c ON a.id_program = c.id_program
+               LEFT JOIN kecamatan d ON a.id_kec = d.id_kec
+               WHERE a.is_delete=1 AND a.status = 'Selesai' ORDER BY a.time_input DESC");
 
-$pmksx = query("SELECT * FROM pmks WHERE id_pmks='$id'")[0];
-$pmks = query("SELECT a.*, b.*,c.*,d.*,f.*,g.*,h.id_kec,h.nm_kec AS nm_kec_kk,i.id_desa,i.nm_desa AS nm_desa_kk FROM pmks a 
-                               INNER JOIN kat_pmks b USING (id_kat_pmks)
-                               INNER JOIN program_bantuan c USING (id_program)
-                               INNER JOIN kk d USING (id_kk)
-                               INNER JOIN Kecamatan f ON a.id_kec = f.id_kec
-                               INNER JOIN desa g ON a.id_desa = g.id_desa
-                               INNER JOIN Kecamatan h ON d.id_kec = h.id_kec
-                               INNER JOIN desa i ON d.id_desa = i.id_desa
-                               WHERE a.is_delete = 1 AND d.is_delete = 1 AND a.id_pmks = $id ");
-
-$pmksy = query("SELECT a.*, b.*,c.*,d.*,f.*,g.* FROM pmks a 
-                               INNER JOIN kat_pmks b USING (id_kat_pmks)
-                               INNER JOIN program_bantuan c USING (id_program)
-                               INNER JOIN kk d USING (id_kk)
-                               INNER JOIN Kecamatan f ON a.id_kec = f.id_kec
-                               INNER JOIN desa g ON a.id_desa = g.id_desa
-                               WHERE a.is_delete = 1 AND d.is_delete = 1 AND a.id_pmks = $id ")[0];
-
-
-$mpdf = new \Mpdf\Mpdf(['format' => 'legal']);
+$mpdf = new \Mpdf\Mpdf(['format' => 'A4']);
 $data = '
 <!DOCTYPE html>
 <html>
 <head>
-   <title>Cetak PMKS</title>
+   <title>Cetak Laporan Data PMKS</title>
 </head>
 <body>
    <table margin="auto">
       <tr>
-         <td width="20%"><img src="assets/img/logo-pmks.png" width="100px" height="100px"></td>
+         <td width="20%"><img src="assets/img/pmks.png" width="100px" height="100px"></td>
          <td width="85%">
          <center>
             <font size="5"><b>PEMERINTAH KABUPATEN TEGAL<b></font><br>
@@ -52,171 +39,56 @@ $data = '
       </tr>
    </table>
 
-   <table margin="auto">
+   <div style="text-align:center">
+      <h4><b>LAPORAN DATA PMKS ONLINE</b></h4>
+   </div>
+
+   <table border="1" cellpadding="10" cellspacing="0" autosize="1" width="100%">
+      <thead>
          <tr>
-            <td width="10%">
-               <center>
-                     <font size="5">Data PMKS</font><br>
-               </center>
-            </td>
+            <th>No</th>
+            <th>Nama</th>
+            <th>Alamat</th>
+            <th>Kecamatan</th>
+            <th>No Telepon</th>
+            <th>Jenis Akses</th>
+            <th>Sub Menu</th>
+            <th>Tanggal Akses</th>
+            <th>Status</th>
          </tr>
+      </thead>
+      <tbody>';
+
+$i = 1;
+foreach ($pmks as $row) {
+    $data .= '<tr>
+        <td style="text-align:center">' . $i++ . '</td>
+        <td>' . $row['nm_pmks'] . '</td>
+        <td>' . $row['alamat'] . '</td>
+        <td>' . $row['kecamatan'] . '</td>
+        <td>' . $row['no_telepon'] . '</td>
+        <td>' . $row['jenis_akses'] . '</td>
+        <td>' . $row['sub_menu'] . '</td>
+        <td>' . date('d-m-Y', strtotime($row['time_input'])) . '</td>
+        <td style="text-align:center">' . $row['status'] . '</td>
+    </tr>';
+}
+
+$data .= '</tbody>
    </table>
 
-   <table border="0" cellpadding="10" cellspacing="0" autosize="1" width="90%">';
-          foreach ($pmks as $row) {
-
-            $data .= '<tr>
-                        <th colspan="3"><font size="3">IDENTITAS KEPALA KELUARGA</font></th>
-                     </tr>
-                     <tr>
-                        <th  style="text-align:left"><font size="3">Nama Kepala Keluarga</font></th>
-                        <td  style="text-align:left"><font size="3">:</font></td>
-                        <td  style="text-align:left"><font size="3">'. $row["nm_kpl"] .'</font></td>
-                     </tr>
-                     <tr>
-                        <th style="text-align:left"><font size="3">Tanggal Lahir</font></th>
-                        <td style="text-align:left"><font size="3">:</font></td>
-                        <td style="text-align:left"><font size="3">'. date('d-M-Y', strtotime($row['tgl_lhr_kpl'])) .'</font></td>
-                     </tr>
-                     <tr>
-                        <th style="text-align:left"><font size="3">No NIK</font></th>
-                        <td style="text-align:left"><font size="3">:</font></td>
-                        <td style="text-align:left"><font size="3">'. $row['nik_kpl'] .'</font></td>
-                     </tr>
-                     <tr>
-                        <th style="text-align:left"><font size="3">No KK</font></th>
-                        <td style="text-align:left"><font size="3">:</font></td>
-                        <td style="text-align:left"><font size="3">'. $row['no_kk'] .'</font></td>
-                     </tr>
-                     <tr>
-                        <th style="text-align:left"><font size="3">Kecamatan</font></th>
-                        <td style="text-align:left"><font size="3">:</font></td>
-                        <td style="text-align:left"><font size="3">'. $row['nm_kec_kk'] .'</font></td>
-                     </tr>
-                     <tr>
-                        <th style="text-align:left"><font size="3">Kelurahan/Desa</font></th>
-                        <td style="text-align:left"><font size="3">:</font></td>
-                        <td style="text-align:left"><font size="3">'. $row['nm_desa_kk'] .'</font></td>
-                     </tr>
-                     <tr>
-                        <th style="text-align:left"><font size="3">Alamat</font></th>
-                        <td style="text-align:left"><font size="3">:</font></td>
-                        <td style="text-align:left"><font size="3">'. $row['alamat_kpl'] .'</font></td>
-                     </tr>
-                     <tr>
-                        <th style="text-align:left"><font size="3">Pendidikan</font></th>
-                        <td style="text-align:left"><font size="3">:</font></td>
-                        <td style="text-align:left"><font size="3">'. $row['pendidikan_kpl'] .'</font></td>
-                     </tr>
-                     <tr>
-                        <th style="text-align:left"><font size="3">Pekerjaan</font></th>
-                        <td style="text-align:left"><font size="3">:</font></td>
-                        <td style="text-align:left"><font size="3">'. $row['pekerjaan_kpl'] .'</font></td>
-                     </tr>
-                     <tr>
-                        <th colspan="3"><font size="3">IDENTITAS PENYANDANG KESEJAHTERAAN SOSIAL</font></th>
-                     </tr>
-                     <tr>
-                        <th style="text-align:left"><font size="3">Nama</font></th>
-                        <td style="text-align:left"><font size="3">:</font></td>
-                        <td style="text-align:left"><font size="3">'. $row['nm_pmks'] .'</font></td>
-                     </tr>
-                     <tr>
-                        <th style="text-align:left"><font size="3">No NIK</font></th>
-                        <td style="text-align:left"><font size="3">:</font></td>
-                        <td style="text-align:left"><font size="3">'. $row['nik_pmks'] .'</font></td>
-                     </tr>
-                     <tr>
-                        <th style="text-align:left"><font size="3">Nama Ibu Kandung</font></th>
-                        <td style="text-align:left"><font size="3">:</font></td>
-                        <td style="text-align:left"><font size="3">'. $row['nm_ibu_pmks'] .'</font></td>
-                     </tr>
-                     <tr>
-                        <th style="text-align:left"><font size="3">Tanggal Lahir</font></th>
-                        <td style="text-align:left"><font size="3">:</font></td>
-                        <td style="text-align:left"><font size="3">'. date('d-M-Y', strtotime($row['tgl_lhr_pmks'])) .'</font></td>
-                     </tr>
-                     <tr>
-                        <th style="text-align:left"><font size="3">Kecamatan</font></th>
-                        <td style="text-align:left"><font size="3">:</font></td>
-                        <td style="text-align:left"><font size="3">'. $row['nm_kec'] .'</font></td>
-                     </tr>
-                     <tr>
-                        <th style="text-align:left"><font size="3">Kelurahan/Desa</font></th>
-                        <td style="text-align:left"><font size="3">:</font></td>
-                        <td style="text-align:left"><font size="3">'. $row['nm_desa'] .'</font></td>
-                     </tr>
-                     <tr>
-                        <th style="text-align:left"><font size="3">Jenis Kelamin</font></th>
-                        <td style="text-align:left"><font size="3">:</font></td>
-                        <td style="text-align:left"><font size="3">'. $row['jns_klm_pmks'] .'</font></td>
-                     </tr>
-                      <tr>
-                        <th style="text-align:left"><font size="3">Pendidikan</font></th>
-                        <td style="text-align:left"><font size="3">:</font></td>
-                        <td style="text-align:left"><font size="3">'. $row['pendidikan_pmks'] .'</font></td>
-                     </tr>
-                     <tr>
-                        <th style="text-align:left"><font size="3">Kategori PMKS</font></th>
-                        <td style="text-align:left"><font size="3">:</font></td>
-                        <td style="text-align:left"><font size="3">'. $row['nm_kat'] .'</font></td>
-                     </tr>
-                     <tr>
-                        <th style="text-align:left"><font size="3">Program Bantuan Yang Diterima</font></th>
-                        <td style="text-align:left"><font size="3">:</font></td>
-                        <td style="text-align:left"><font size="3">'. $row['nm_program'] .'</font></td>
-                     </tr>
-                     <tr>
-                        <th style="text-align:left"><font size="3">Hasil Survei</font></th>
-                        <td style="text-align:left"><font size="3">:</font></td>
-                        <td style="text-align:left"><font size="3">'. $row['hsl_survei'] .'</font></td>
-                     </tr>
-                     ';
-          }
-
-$data .= '</table>
-<br>
-<table border="0" autosize="1" width="100%">
-   <tr>
-     <td></td>
-     <td></td>
-     <td width="50%" style="text-align:center;"><font size="3">Tegal, '.date("d M Y").' </font></td>
-   </tr>
-   <tr>
-     <td></td>
-     <td></td>
-     <td width="50%" style="text-align:center;"><font size="3">A/n. Kepala Bidang Dinas Sosial Kab.Tegal </font></td>
-   </tr>
-   <tr>
-     <td></td>
-     <td></td>
-     <td width="50%" style="text-align:center;"><font size="3">Kepala Bidang Sekretariat</font></td>
-   </tr>
- </table>
- <br>
- <br>
- <table border="0" autosize="1" width="100%">
-   <tr>
-     <td></td>
-     <td></td>
-     <td width="50%" style="text-align:center;"><font size="3"><b>Ibnu Fajar As Syukron<b></font></td>
-   </tr>
-   <tr>
-     <td></td>
-     <td></td>
-     <td width="50%" style="text-align:center;"><font size="3">Penata Tk. I, III/d</font></td>
-   </tr>
-   <tr>
-     <td></td>
-     <td></td>
-     <td width="50%" style="text-align:center;"><font size="3">NIP. 19650309 198903 1 012</font></td>
-   </tr>
- </table>
-
+   <br><br>
+   <table width="100%">
+      <tr><td></td><td></td><td style="text-align:center">Tegal, ' . date("d M Y") . '</td></tr>
+      <tr><td></td><td></td><td style="text-align:center">A/n. Kepala Bidang Dinas Sosial Kab.Tegal</td></tr>
+      <tr><td></td><td></td><td style="text-align:center">Kepala Bidang Sekretariat</td></tr>
+      <tr><td colspan="3"><br><br><br></td></tr>
+      <tr><td></td><td></td><td style="text-align:center"><b>Ibnu Fajar As Syukron</b></td></tr>
+      <tr><td></td><td></td><td style="text-align:center">Penata Tk. I, III/d</td></tr>
+      <tr><td></td><td></td><td style="text-align:center">NIP. 19650309 198903 1 012</td></tr>
+   </table>
 </body>
-</html>
-';
-$mpdf->Image('assets/img/logo.png',0,0,210,297,'png','',true,false);
+</html>';
+
 $mpdf->WriteHTML($data);
-$mpdf->Output();
-?>
+$mpdf->Output('laporan_pmks.pdf', \Mpdf\Output\Destination::INLINE);
