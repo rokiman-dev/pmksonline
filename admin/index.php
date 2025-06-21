@@ -149,25 +149,7 @@ if (isset($_SESSION["pegawai"])){
 
         <!-- Earnings (Monthly) Card Example -->
 
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-h3 font-weight-bold text-primary text-uppercase mb-1">KK</div>
-                            <?php $kk = query("SELECT * FROM kk WHERE is_delete=1");
-                        $jml_kk = count($kk); ?>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?=$jml_kk?> KK</div>
-                        </div>
-                        <div class="col-auto">
-                            <a href="pmks.php">
-                                <i class="fas fa-file fa-2x text-gray-300"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+
 
         <!-- Earnings (Monthly) Card Example -->
 
@@ -190,12 +172,6 @@ if (isset($_SESSION["pegawai"])){
                 </div>
             </div>
         </div>
-
-
-
-        <!-- <img src="../assets/img/logo.png" height="250px" align="center"> -->
-
-
     </div>
 
 </div>
