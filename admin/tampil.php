@@ -4,10 +4,6 @@ if (!isset($_SESSION["admin"])){
     header("location:../index.php");
     exit;
 }
-if (isset($_SESSION["pimpinan"])){
-    header("location:admin/index.php");
-    exit;
-}
 if (isset($_SESSION["pegawai"])){
     header("location:admin/index.php");
     exit;
@@ -87,96 +83,94 @@ if (isset($_SESSION["pegawai"])){
 }
 ?>
 
-        <!-- Begin Page Content -->
-        <div class="container-fluid">
+<!-- Begin Page Content -->
+<div class="container-fluid">
 
-          <!-- Page Heading -->
-          <h1 class="h3 mb-4 text-judul">DATA PMKS</h1>
+    <!-- Page Heading -->
+    <h1 class="h3 mb-4 text-judul">DATA PMKS</h1>
 
-          <!-- isi content -->
-          <div class="card shadow mb-2">
-            <div class="card-header py-3">
+    <!-- isi content -->
+    <div class="card shadow mb-2">
+        <div class="card-header py-3">
 
 
-              <div class="card-body">
+            <div class="card-body">
                 <div class="table-responsive">
-                  <table class="table" width="100%" cellspacing="0">
-                    <thead >
+                    <table class="table" width="100%" cellspacing="0">
+                        <thead>
 
-                      <?php foreach ($pmks as $row):?>
-                      <tr>
-                        <th class="text-left">Nama Kepala Keluarga</th>
-                          <td class="text-left">:</td>
-                          <td class="text-left"><?=$row['nm_kpl'] ?></td>
-                      </tr>
-                      <tr>
-                        <th class="text-left">TTL Kepala Keluarga</th>
-                          <td class="text-left">:</td>
-                          <td class="text-left"><?=$row['tgl_lhr_kpl'] ?></td>
-                      </tr>
-                      <tr>
-                        <th class="text-left">NO NIK</th>
-                          <td class="text-left">:</td>
-                          <td class="text-left"><?=$row['nik_kpl'] ?></td>
-                      </tr>
-                      <tr>
-                        <th class="text-left">NO KK</th>
-                          <td class="text-left">:</td>
-                          <td class="text-left"><?=$row['no_kk'] ?></td>
-                      </tr>
-                      <tr>
-                        <th class="text-left">Alamat</th>
-                          <td class="text-left">:</td>
-                          <td class="text-left"><?=$row['alamat'] ?></td>
-                      </tr>
-                      <tr>
-                        <th class="text-left">Hubungan</th>
-                          <td class="text-left">:</td>
-                          <td class="text-left"><?=$row['hubungan'] ?></td>
-                      </tr>
-                      <tr>
-                        <th class="text-left">Pendidikan</th>
-                          <td class="text-left">:</td>
-                          <td class="text-left"><?=$row['pendidikan_kpl'] ?></td>
-                      </tr>
-                      <tr>
-                        <th class="text-left">Pekerjaan</th>
-                          <td class="text-left">:</td>
-                          <td class="text-left"><?=$row['pekerjaan_kpl'] ?></td>
-                      </tr>
-                      <tr>
-                        <th class="text-left">Nama PMKS</th>
-                          <td class="text-left">:</td>
-                          <td class="text-left"><?=$row['nm_pmks'] ?></td>
-                      </tr>
-                      <tr>
-                        <th class="text-left">Kategori PMKS</th>
-                          <td class="text-left">:</td>
-                          <td class="text-left"><?=$row['nm_kat'] ?></td>
-                      </tr>
-                      <tr>
-                        <th class="text-left">Bantuan PMKS</th>
-                          <td class="text-left">:</td>
-                          <td class="text-left"><?=$row['nm_program'] ?></td>
-                      </tr>
-                    <?php endforeach; ?>
+                            <?php foreach ($pmks as $row):?>
+                            <tr>
+                                <th class="text-left">Nama Kepala Keluarga</th>
+                                <td class="text-left">:</td>
+                                <td class="text-left"><?=$row['nm_kpl'] ?></td>
+                            </tr>
+                            <tr>
+                                <th class="text-left">TTL Kepala Keluarga</th>
+                                <td class="text-left">:</td>
+                                <td class="text-left"><?=$row['tgl_lhr_kpl'] ?></td>
+                            </tr>
+                            <tr>
+                                <th class="text-left">NO NIK</th>
+                                <td class="text-left">:</td>
+                                <td class="text-left"><?=$row['nik_kpl'] ?></td>
+                            </tr>
+                            <tr>
+                                <th class="text-left">NO KK</th>
+                                <td class="text-left">:</td>
+                                <td class="text-left"><?=$row['no_kk'] ?></td>
+                            </tr>
+                            <tr>
+                                <th class="text-left">Alamat</th>
+                                <td class="text-left">:</td>
+                                <td class="text-left"><?=$row['alamat'] ?></td>
+                            </tr>
+                            <tr>
+                                <th class="text-left">Hubungan</th>
+                                <td class="text-left">:</td>
+                                <td class="text-left"><?=$row['hubungan'] ?></td>
+                            </tr>
+                            <tr>
+                                <th class="text-left">Pendidikan</th>
+                                <td class="text-left">:</td>
+                                <td class="text-left"><?=$row['pendidikan_kpl'] ?></td>
+                            </tr>
+                            <tr>
+                                <th class="text-left">Pekerjaan</th>
+                                <td class="text-left">:</td>
+                                <td class="text-left"><?=$row['pekerjaan_kpl'] ?></td>
+                            </tr>
+                            <tr>
+                                <th class="text-left">Nama PMKS</th>
+                                <td class="text-left">:</td>
+                                <td class="text-left"><?=$row['nm_pmks'] ?></td>
+                            </tr>
+                            <tr>
+                                <th class="text-left">Kategori PMKS</th>
+                                <td class="text-left">:</td>
+                                <td class="text-left"><?=$row['nm_kat'] ?></td>
+                            </tr>
+                            <tr>
+                                <th class="text-left">Bantuan PMKS</th>
+                                <td class="text-left">:</td>
+                                <td class="text-left"><?=$row['nm_program'] ?></td>
+                            </tr>
+                            <?php endforeach; ?>
 
-                    </thead>
-                  </tbody>
-                </table>
-              </div>
+                        </thead>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
-              
-      
-            </div> 
-          </div> 
+
+
         </div>
-        <!-- /.container-fluid -->
-      </div>
-      <!-- End of Main Content -->
+    </div>
+</div>
+<!-- /.container-fluid -->
+</div>
+<!-- End of Main Content -->
 
 
-      <?php include('templetes/footer.php');?>
-
-
+<?php include('templetes/footer.php');?>

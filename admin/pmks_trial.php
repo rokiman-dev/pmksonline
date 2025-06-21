@@ -8,9 +8,9 @@ if (!isset($_SESSION["admin"])){
 $page = "pmks";
 date_default_timezone_set('Asia/Jakarta');
 require_once '../config.php';
-require_once "../functions.php";
-include('templetes/sidebar.php');
-include('templetes/topbar.php');
+  include('templetes/sidebar.php');
+  include('templetes/topbar.php');
+  require_once "../functions.php";
 
 // TAMBAH PMKS
 if (isset($_POST['tambah'])) {

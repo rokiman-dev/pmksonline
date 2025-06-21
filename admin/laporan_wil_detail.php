@@ -4,10 +4,6 @@ if (!isset($_SESSION["admin"])){
     header("location:../index.php");
     exit;
 }
-if (isset($_SESSION["pimpinan"])){
-    header("location:admin/index.php");
-    exit;
-}
 if (isset($_SESSION["pegawai"])){
     header("location:admin/index.php");
     exit;
@@ -54,79 +50,80 @@ $pmksx=query("SELECT a.*,b.id_kec,b.nm_kec,b.is_delete FROM desa a
 
 ?>
 
-        <!-- Begin Page Content -->
-        <div class="container-fluid">
+<!-- Begin Page Content -->
+<div class="container-fluid">
 
-          <!-- Page Heading -->
-          <h1 class="h3 mb-4 text-judul">Data PMKS Kec.<?=$pmksx['nm_kec']. ' Desa '. $pmksx['nm_desa'] ?></h1>
+    <!-- Page Heading -->
+    <h1 class="h3 mb-4 text-judul">Data PMKS Kec.<?=$pmksx['nm_kec']. ' Desa '. $pmksx['nm_desa'] ?></h1>
 
-          <!-- isi content -->
-              <div class="card shadow mb-2">
-                <div class="card-header py-3">
-                  <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalTambah"> <i class="fas fa-plus"></i>
+    <!-- isi content -->
+    <div class="card shadow mb-2">
+        <div class="card-header py-3">
+            <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalTambah"> <i class="fas fa-plus"></i>
                   Tambah User
                  </button>  -->
-                </div>
+        </div>
 
-                <div class="card-body">
-                <div class="table-responsive">
+        <div class="card-body">
+            <div class="table-responsive">
                 <table class="table table-bordered" width="100%" cellspacing="0">
-                  <thead class="table-dark">
-                    <tr>
-                      <th class="text-center">No</th>
-                      <th class="text-center">NIK</th>
-                      <th class="text-center">Nama</th>
-                      <th class="text-center">Kategori PMKS</th>
-                      <th class="text-center">Program Bantuan</th>
-                      <th class="text-center">Hasil Survei</th>
-                      <th class="text-center">Aksi</th>
-                    </tr>
-                  </thead>
+                    <thead class="table-dark">
+                        <tr>
+                            <th class="text-center">No</th>
+                            <th class="text-center">NIK</th>
+                            <th class="text-center">Nama</th>
+                            <th class="text-center">Kategori PMKS</th>
+                            <th class="text-center">Program Bantuan</th>
+                            <th class="text-center">Hasil Survei</th>
+                            <th class="text-center">Aksi</th>
+                        </tr>
+                    </thead>
 
-                  <?php $i=$awaldata+1; ?>
-                  <?php foreach ($pmks as $row):?>
+                    <?php $i=$awaldata+1; ?>
+                    <?php foreach ($pmks as $row):?>
 
                     <tbody>
-                      <tr>
-                        <td class="text-center"><?=$i;?></td>
-                        <td class="text-left"><?=$row['nik_pmks'];?></td>
-                        <td class="text-left"><?=$row['nm_pmks'];?></td>
-                        <td class="text-left"><?=$row['nm_kat'];?></td>
-                        <td class="text-left"><?=$row['nm_program'];?></td>
-                        <td class="text-left"><?=$row['hsl_survei'];?></td>
-                        <td class="text-center">
-                         <a href="pmks_laporan.php?id=<?=$row['id_pmks'] ?>" class="btn btn-warning btn-sm">Detail</a>
-                        </td>
-                      </tr>
-                      <?php $i++;?>
-                    <?php endforeach; ?>
-                  </tbody>
+                        <tr>
+                            <td class="text-center"><?=$i;?></td>
+                            <td class="text-left"><?=$row['nik_pmks'];?></td>
+                            <td class="text-left"><?=$row['nm_pmks'];?></td>
+                            <td class="text-left"><?=$row['nm_kat'];?></td>
+                            <td class="text-left"><?=$row['nm_program'];?></td>
+                            <td class="text-left"><?=$row['hsl_survei'];?></td>
+                            <td class="text-center">
+                                <a href="pmks_laporan.php?id=<?=$row['id_pmks'] ?>"
+                                    class="btn btn-warning btn-sm">Detail</a>
+                            </td>
+                        </tr>
+                        <?php $i++;?>
+                        <?php endforeach; ?>
+                    </tbody>
                 </table>
                 <nav aria-label="Page navigation example">
-                  <ul class="pagination float-right">
-                    <?php if ($pageAktif > 1) : ?>
-                      <li class="page-item"><a class="page-link" href="?page=<?=$pageAktif-1; ?>">Previous</a></li>
-                    <?php endif; ?>
-                    <?php for ($i=1; $i <= $jml_Halaman; $i++) : ?>
-                      <?php if ($i == $pageAktif) : ?>
+                    <ul class="pagination float-right">
+                        <?php if ($pageAktif > 1) : ?>
+                        <li class="page-item"><a class="page-link" href="?page=<?=$pageAktif-1; ?>">Previous</a></li>
+                        <?php endif; ?>
+                        <?php for ($i=1; $i <= $jml_Halaman; $i++) : ?>
+                        <?php if ($i == $pageAktif) : ?>
                         <li class="page-item active"><a class="page-link" href="?page=<?=$i; ?>"><?=$i; ?></a></li>
                         <?php else : ?>
-                          <li class="page-item"><a class="page-link" href="?page=<?=$i; ?>"><?=$i; ?></a></li>
+                        <li class="page-item"><a class="page-link" href="?page=<?=$i; ?>"><?=$i; ?></a></li>
                         <?php endif; ?>
-                      <?php endfor; ?>
-                      <?php if ($pageAktif < $jml_Halaman) : ?>
+                        <?php endfor; ?>
+                        <?php if ($pageAktif < $jml_Halaman) : ?>
                         <li class="page-item"><a class="page-link" href="?page=<?=$pageAktif+1; ?>">Next</a></li>
-                      <?php endif; ?>
+                        <?php endif; ?>
                     </ul>
-                  </nav>
-                </div>
-              </div>
-
-            </div> 
+                </nav>
+            </div>
         </div>
-        <!-- /.container-fluid -->
-      </div>
-      <!-- End of Main Content -->
+
+    </div>
+</div>
+<!-- /.container-fluid -->
+</div>
+<!-- End of Main Content -->
 
 
 <?php include('templetes/footer.php');?>

@@ -5,10 +5,6 @@ if (!isset($_SESSION["admin"])){
     header("location:../index.php");
     exit;
 }
-if (isset($_SESSION["pimpinan"])){
-    header("location:admin/index.php");
-    exit;
-}
 if (isset($_SESSION["pegawai"])){
     header("location:admin/index.php");
     exit;

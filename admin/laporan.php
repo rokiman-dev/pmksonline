@@ -27,14 +27,14 @@ $pmks = query("SELECT a.*, b.nm_kat AS jenis_akses, c.nm_program AS sub_menu, d.
                LEFT JOIN kat_pmks b ON a.id_kat_pmks = b.id_kat_pmks
                LEFT JOIN program_bantuan c ON a.id_program = c.id_program
                LEFT JOIN kecamatan d ON a.id_kec = d.id_kec
-               WHERE a.is_delete = 1 AND a.status = 'Selesai'
+               WHERE a.is_delete = 1 
                ORDER BY d.nm_kec ASC 
                LIMIT $awaldata, $jml_DataHalaman");
 ?>
 
 <!-- Begin Page Content -->
 <div class="container-fluid">
-    <h1 class="h3 mb-4 text-judul">Data PMKS Online (Status: Selesai)</h1>
+    <h1 class="h3 mb-4 text-judul">Data PMKS Online</h1>
 
     <div class="card shadow mb-2">
         <div class="card-header py-3">
@@ -55,7 +55,6 @@ $pmks = query("SELECT a.*, b.nm_kat AS jenis_akses, c.nm_program AS sub_menu, d.
                             <th class="text-center">Sub Menu</th>
                             <th class="text-center">Tanggal Akses</th>
                             <th class="text-center">Status</th>
-                            <th class="text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -71,10 +70,7 @@ $pmks = query("SELECT a.*, b.nm_kat AS jenis_akses, c.nm_program AS sub_menu, d.
                             <td><?= $row['sub_menu']; ?></td>
                             <td><?= date('d-m-Y', strtotime($row['time_input'])); ?></td>
                             <td class="text-center"><?= $row['status']; ?></td>
-                            <td class="text-center">
-                                <a href="pmks_laporan.php?id=<?= $row['id_pmks'] ?>"
-                                    class="btn btn-warning btn-sm">Detail</a>
-                            </td>
+
                         </tr>
                         <?php endforeach; ?>
                     </tbody>
