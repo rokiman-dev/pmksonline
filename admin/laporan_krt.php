@@ -13,13 +13,13 @@ if (!isset($_SESSION["Admin"])){
   require_once "../functions.php";
 
   $jml_DataHalaman = 5;
-  $jml_responden = count(query("SELECT * FROM kecamatan WHERE is_delete=1 AND nm_kec!='Tidak Ada'ORDER BY nm_kec ASC"));
+  $jml_responden = count(query("SELECT * FROM kecamatan WHERE is_delete=0 AND nm_kec!='Tidak Ada'ORDER BY nm_kec ASC"));
   $jml_Halaman = ceil($jml_responden / $jml_DataHalaman);
 
   $pageAktif = (isset($_GET["page"]) ) ? $_GET["page"] : 1;
   $awaldata = ( $jml_DataHalaman * $pageAktif ) - $jml_DataHalaman;
 
-  $kec=query("SELECT * FROM kecamatan WHERE is_delete=1 AND nm_kec!='Tidak Ada'ORDER BY nm_kec ASC LIMIT $awaldata, $jml_DataHalaman");
+  $kec=query("SELECT * FROM kecamatan WHERE is_delete=0 AND nm_kec!='Tidak Ada'ORDER BY nm_kec ASC LIMIT $awaldata, $jml_DataHalaman");
 
 ?>
 
@@ -36,7 +36,7 @@ if (!isset($_SESSION["Admin"])){
         </div>
 
         <?php 
-                $ktr=query("SELECT * FROM kat_pmks WHERE is_delete=1 ORDER By nm_kat ASC");
+                $ktr=query("SELECT * FROM kat_pmks WHERE is_delete=0 ORDER By nm_kat ASC");
                 $jml_ktr = count($ktr);
                  ?>
 
@@ -80,7 +80,7 @@ if (!isset($_SESSION["Admin"])){
                            $result = query("SELECT a.*,b.*,c.* FROM pmks a 
                                                  INNER JOIN kecamatan b USING (id_kec)
                                                  INNER JOIN kat_pmks c USING (id_kat_pmks) 
-                                                 WHERE a.is_delete=1 
+                                                 WHERE a.is_delete=0 
                                                  AND b.id_kec = $id_kec AND c.id_kat_pmks = $id_kat");
                            $jml =count($result);
                           ?>
@@ -91,7 +91,7 @@ if (!isset($_SESSION["Admin"])){
                           $result_tot = query("SELECT a.*,b.*,c.* FROM pmks a 
                                                  INNER JOIN kecamatan b USING (id_kec)
                                                  INNER JOIN kat_pmks c USING (id_kat_pmks) 
-                                                 WHERE a.is_delete=1 
+                                                 WHERE a.is_delete=0 
                                                  AND b.id_kec = $id_kec");
                           $jml_tot =count($result_tot);
                          ?>
@@ -109,7 +109,7 @@ if (!isset($_SESSION["Admin"])){
                           $result_tol = query("SELECT a.*,b.*,c.* FROM pmks a 
                                                  INNER JOIN kecamatan b USING (id_kec)
                                                  INNER JOIN kat_pmks c USING (id_kat_pmks) 
-                                                 WHERE a.is_delete=1 
+                                                 WHERE a.is_delete=0 
                                                  AND c.id_kat_pmks = $id_kat2");
                            $jml_tot =count($result_tol); ?>
                             <td class="text-center"><b><?=$jml_tot ?></b></td>
@@ -118,7 +118,7 @@ if (!isset($_SESSION["Admin"])){
                           $result_tol2 = query("SELECT a.*,b.*,c.* FROM pmks a 
                                                  INNER JOIN kecamatan b USING (id_kec)
                                                  INNER JOIN kat_pmks c USING (id_kat_pmks) 
-                                                 WHERE a.is_delete=1 ");
+                                                 WHERE a.is_delete=0 ");
                            $jml_tot2 =count($result_tol2); ?>
                             <td class="text-center"><b><?=$jml_tot2 ?></b></td>
                         </tr>

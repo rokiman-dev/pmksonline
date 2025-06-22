@@ -12,30 +12,13 @@ require_once '../config.php';
   include('templetes/topbar.php');
   require_once "../functions.php";
 
-// TAMBAH PMKS
 if (isset($_POST['tambah'])) {
-  $nama        = $_POST['nm_pmks'];
-  $alamat      = $_POST['alamat'];
-  $id_kec      = $_POST['id_kec'];
-  $no_telepon  = $_POST['no_telepon'];
-  $id_kat      = $_POST['id_kat_pmks'];
-  $id_program  = $_POST['id_program'];
-  $creator     = $_POST['id_pegawai'];
-  $time_input  = $_POST['time_input'];
-  $is_delete   = $_POST['is_delete'];
-  $status      = $_POST['status'];
-
-  $query = "INSERT INTO pmks 
-    (nm_pmks, alamat, id_kec, no_telepon, id_kat_pmks, id_program, creator, time_input, is_delete, status)
-    VALUES 
-    ('$nama', '$alamat', '$id_kec', '$no_telepon', '$id_kat', '$id_program', '$creator', '$time_input', '$is_delete', '$status')";
-
-  if (mysqli_query($koneksi, $query)) {
-    echo "<script>alert('Data berhasil ditambahkan'); window.location.href='pmks.php';</script>";
-    exit;
-  } else {
-    echo "<script>alert('Gagal menambahkan data: " . mysqli_error($koneksi) . "');</script>";
-  }
+    if (tambahDataPmks($_POST) > 0) {
+        echo "<script>alert('Data berhasil ditambahkan'); window.location.href='pmks.php';</script>";
+        exit;
+    } else {
+        echo "<script>alert('Gagal menambahkan data: " . mysqli_error($koneksi) . "');</script>";
+    }
 }
 
 $id_pegawai = $_SESSION['id_pegawai'];
@@ -87,28 +70,11 @@ if (isset($_POST["approve"])) {
 }
 
 if (isset($_POST['edit'])) {
-  $id_pmks     = $_POST['id_pmks'];
-  $nm_pmks     = $_POST['nm_pmks'];
-  $alamat      = $_POST['alamat'];
-  $id_kec      = $_POST['id_kec'];
-  $no_telepon  = $_POST['no_telepon'];
-  $id_kat_pmks = $_POST['id_kat_pmks'];
-  $id_program  = $_POST['id_program'];
-
-  $query = "UPDATE pmks SET 
-              nm_pmks = '$nm_pmks',
-              alamat = '$alamat',
-              id_kec = '$id_kec',
-              no_telepon = '$no_telepon',
-              id_kat_pmks = '$id_kat_pmks',
-              id_program = '$id_program'
-            WHERE id_pmks = $id_pmks";
-
-  if (mysqli_query($koneksi, $query)) {
-    echo "<script>alert('Data berhasil diperbarui!'); window.location.href='pmks.php';</script>";
-  } else {
-    echo "<script>alert('Gagal memperbarui data: " . mysqli_error($koneksi) . "');</script>";
-  }
+    if (editDataPmks($_POST) > 0) {
+        echo "<script>alert('Data berhasil diperbarui!'); window.location.href='pmks.php';</script>";
+    } else {
+        echo "<script>alert('Gagal memperbarui data: " . mysqli_error($koneksi) . "');</script>";
+    }
 }
 
 ?>

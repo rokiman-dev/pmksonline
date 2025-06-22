@@ -406,7 +406,7 @@ function hapusDataPegawai($data)
 	include('config.php');
 
 	$id_pegawai = $data["id_pegawai"];
-	$query = "UPDATE pegawai SET is_delete = 0 WHERE id_pegawai='$id_pegawai'";
+	$query = "UPDATE pegawai SET is_delete = 1 WHERE id_pegawai='$id_pegawai'";
 
 	mysqli_query($koneksi, $query);
 	return mysqli_affected_rows($koneksi);
