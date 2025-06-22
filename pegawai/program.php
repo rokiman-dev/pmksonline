@@ -1,16 +1,11 @@
 <?php 
  session_start();
-if (!isset($_SESSION["admin"])){
+if (!isset($_SESSION["Pegawai"])){
     header("location:../index.php");
     exit;
 }
-if (isset($_SESSION["pegawai"])){
-    header("location:admin/index.php");
-    exit;
-}
 
-  $page   = "wilayah";
-  $page1  = "desa";
+  $page  = "program";
   date_default_timezone_set('Asia/Jakarta');
   include('templetes/sidebar.php');
   include('templetes/topbar.php');
@@ -20,33 +15,29 @@ if (isset($_SESSION["pegawai"])){
   $pegawai=query("SELECT id_pegawai FROM pegawai WHERE id_pegawai='$id_pegawai'")[0];
 
   $jml_DataHalaman = 5;
-  $jml_responden = count(query( "SELECT a.*,b.id_kec,b.nm_kec,b.is_delete FROM desa a 
-               INNER JOIN kecamatan b USING (id_kec) WHERE a.is_delete=1 AND b.is_delete=1 AND nm_kec!= 'Tidak Ada'
-               ORDER BY b.nm_kec ASC"));
+  $jml_responden = count(query("SELECT * FROM program_bantuan  WHERE is_delete=0"));
   $jml_Halaman = ceil($jml_responden / $jml_DataHalaman);
 
   $pageAktif = (isset($_GET["page"]) ) ? $_GET["page"] : 1;
   $awaldata = ( $jml_DataHalaman * $pageAktif ) - $jml_DataHalaman;
 
-
-  $desa=query("SELECT a.*,b.id_kec,b.nm_kec,b.is_delete FROM desa a 
-               INNER JOIN kecamatan b USING (id_kec) WHERE a.is_delete=1 AND b.is_delete=1 AND nm_kec!= 'Tidak Ada'
-               ORDER BY b.nm_kec ASC LIMIT $awaldata, $jml_DataHalaman");
+  $prog=query("SELECT * FROM program_bantuan  WHERE is_delete=0 ORDER BY id_program LIMIT $awaldata, $jml_DataHalaman");
+  // var_dump($kecamatan);die;
 
   if(isset($_POST["tambah"])){
   // var_dump($_POST);die;
-  if(tambahDataDesa($_POST)>0){
+  if(tambahDataProgram($_POST)>0){
     echo"
        <script>
        alert('data berhasil di tambah');
-       document.location.href='desa.php';
+       document.location.href='program.php';
        </script>
        ";
       }else{
         echo"
        <script>
        alert('data gagal di tambah');
-       document.location.href='desa.php';
+       document.location.href='program.php';
        </script>
        ";
       }
@@ -54,18 +45,18 @@ if (isset($_SESSION["pegawai"])){
 
   if(isset($_POST["hapus"])){
   // var_dump($_POST);die;
-  if(hapusDataDesa($_POST)>0){
+  if(hapusDataProgram($_POST)>0){
     echo"
        <script>
        alert('data berhasil di hapus');
-       document.location.href='desa.php';
+       document.location.href='program.php';
        </script>
        ";
       }else{
         echo"
        <script>
        alert('data gagal di hapus');
-       document.location.href='desa.php';
+       document.location.href='program.php';
        </script>
        ";
       }
@@ -73,18 +64,18 @@ if (isset($_SESSION["pegawai"])){
 
   if(isset($_POST["edit"])){
   // var_dump($_POST);die;
-  if(editDataDesa($_POST)>0){
+  if(editDataProgram($_POST)>0){
     echo"
        <script>
        alert('data berhasil di ubah');
-       document.location.href='desa.php';
+       document.location.href='program.php';
        </script>
        ";
       }else{
         echo"
        <script>
        alert('data gagal di ubah');
-       document.location.href='desa.php';
+       document.location.href='program.php';
        </script>
        ";
       }
@@ -95,13 +86,13 @@ if (isset($_SESSION["pegawai"])){
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-4 text-judul">Kelurahan/Desa</h1>
+    <h1 class="h3 mb-4 text-judul">Program Bantuan</h1>
 
     <!-- isi content -->
     <div class="card shadow mb-2">
         <div class="card-header py-3">
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalTambah">
-                Tambah Kelurahan/Desa
+                Tambah Program
             </button>
 
             <div class="card-body">
@@ -110,29 +101,27 @@ if (isset($_SESSION["pegawai"])){
                         <thead class="table-dark">
                             <tr>
                                 <th class="text-center">No</th>
-                                <th class="text-center">Kecamatan</th>
-                                <th class="text-center">Kelurahan/Desa</th>
+                                <th class="text-center">Nama Program Bantuan</th>
                                 <th class="text-center">Aksi</th>
                             </tr>
                         </thead>
 
                         <?php $i=$awaldata+1; ?>
-                        <?php foreach ($desa as $row):?>
+                        <?php foreach ($prog as $row):?>
 
                         <tbody>
                             <tr>
                                 <td class="text-center"><?=$i;?></td>
-                                <td class="text-left"><?=$row['nm_kec'];?></td>
-                                <td class="text-left"><?=$row['nm_desa'];?></td>
+                                <td class="text-left"><?=$row['nm_program'];?></td>
                                 <td class="text-center">
                                     <form method="POST">
                                         <button type="button" id="edit" name="edit" class="btn btn-warning btn-sm"
-                                            data-toggle="modal" data-target="#modalEdit<?= $row['id_desa']; ?>">
+                                            data-toggle="modal" data-target="#modalEdit<?= $row['id_program']; ?>">
                                             <i class="fas fa-edit"></i> Edit</button>
 
-                                        <input type="hidden" name="id_desa" value="<?=$row['id_desa'];?>">
+                                        <input type="hidden" name="id_program" value="<?=$row['id_program'];?>">
                                         <button type="submit" name="hapus" class="btn btn-danger btn-sm"
-                                            onclick="return confirm('yakin hapus <?=$row['nm_desa'] ?>?');">
+                                            onclick="return confirm('yakin hapus <?=$row['nm_program'] ?>?');">
                                             <i class="fas fa-trash-alt"></i> Delete</button>
                                     </form>
 
@@ -170,33 +159,21 @@ if (isset($_SESSION["pegawai"])){
                     <div class="modal-content">
                         <form method="POST" enctype="multipart/form-data">
                             <div class="modal-header modal-bg" back>
-                                <h5 class="modal-title modal-text" id="modalTambahTitle">Tambah Kelurahan/Desa</h5>
+                                <h5 class="modal-title modal-text" id="modalTambahTitle">Tambah Program Bantuan</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div class="modal-body">
                                 <form>
-
                                     <div class="form-group">
-                                        <label for="id_kec">Nama Kecamatan:</label>
-                                        <select class="form-control" id="id_kec" name="id_kec">
-                                            <?php 
-                                $kec = query("SELECT * FROM kecamatan WHERE is_delete=1 ORDER BY nm_kec ASC");
-                                foreach ($kec as $key) :?>
-                                            <option value="<?=$key['id_kec'];?>"><?=$key['nm_kec'];?></option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="nm_desa" class="col-form-label">Nama Kelurahan/Desa:</label>
-                                        <input type="text" class="form-control mt-1" id="nm_desa" name="nm_desa"
+                                        <label for="program" class="col-form-label">Nama Program Bantuan:</label>
+                                        <input type="text" class="form-control mt-1" id="program" name="program"
                                             required>
                                     </div>
 
                                     <input type="hidden" class="form-control mt-1" id="is_delete" name="is_delete"
-                                        value="1">
+                                        value="0">
                                     <input type="hidden" class="form-control mt-1" id="row_edit" name="row_edit"
                                         value="0">
                                     <input type="hidden" class="form-control mt-1" id="id_pegawai" name="id_pegawai"
@@ -217,14 +194,14 @@ if (isset($_SESSION["pegawai"])){
             </div>
 
             <!-- Modal Edit Data -->
-            <?php foreach ($desa as $row)  : ?>
-            <div class="modal fade" id="modalEdit<?=$row['id_desa'] ?>" tabindex="-2" role="dialog"
+            <?php foreach ($prog as $row)  : ?>
+            <div class="modal fade" id="modalEdit<?=$row['id_program'] ?>" tabindex="-2" role="dialog"
                 aria-labelledby="modalEditDataTitle" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
                         <form method="post" enctype="multipart/form-data">
                             <div class="modal-header modal-bg" back>
-                                <h5 class="modal-title modal-text" id="modalEditDataTitle">Edit Kelurahan/Desa</h5>
+                                <h5 class="modal-title modal-text" id="modalEditDataTitle">Edit Program Bantuan</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -232,22 +209,20 @@ if (isset($_SESSION["pegawai"])){
                             <div class="modal-body">
                                 <form>
 
-                                    <input type="hidden" name="id_desa" class="form-control"
-                                        value="<?=$row['id_desa'] ?>">
+                                    <input type="hidden" name="id_program" class="form-control"
+                                        value="<?=$row['id_program'] ?>">
                                     <!-- Data lama -->
-                                    <input type="hidden" name="id_kec2" class="form-control"
-                                        value="<?=$row['id_kec']?>">
-                                    <input type="hidden" name="nm_desa2" class="form-control"
-                                        value="<?=$row['nm_desa']?>">
+                                    <input type="hidden" name="program2" class="form-control"
+                                        value="<?=$row['nm_program']?>">
                                     <input type="hidden" name="is_delete2" class="form-control" value="0">
                                     <input type="hidden" name="row_edit2" class="form-control"
-                                        value="<?=$row['id_desa']?>">
+                                        value="<?=$row['id_program']?>">
                                     <input type="hidden" name="id_pegawai2" class="form-control"
                                         value="<?=$row['creator']?>">
                                     <input type="hidden" name="time_input2" class="form-control"
-                                        value="<?=date("Y-m-d H:i:s") ?>">
+                                        value="<?=date("Y-m-d H:i:s"); ?>">
                                     <!-- Data Baru -->
-                                    <input type="hidden" name="is_delete" class="form-control" value="1">
+                                    <input type="hidden" name="is_delete" class="form-control" value="0">
                                     <input type="hidden" name="row_edit" class="form-control"
                                         value="<?=$row['row_edit']?>">
                                     <input type="hidden" name="id_pegawai" class="form-control"
@@ -257,25 +232,9 @@ if (isset($_SESSION["pegawai"])){
 
 
                                     <div class="form-group">
-                                        <label for="id_kec">Nama Kecamatan:</label>
-                                        <select class="form-control" id="id_kec" name="id_kec">
-                                            <?php 
-                                $kec = query("SELECT * FROM kecamatan WHERE is_delete=1 ORDER BY nm_kec ASC");
-                                foreach ($kec as $key) : ?>
-                                            <option value="<?=$key['id_kec']?>" <?php  if ($row['id_kec']==$key['id_kec']) {
-                                      echo "selected";
-                                    }else{
-                                      echo "";
-                                    }?>>
-                                                <?=$key['nm_kec'];?></option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="nm_desa" class="col-form-label">Nama Kelurahan/Desa:</label>
-                                        <input type="text" class="form-control mt-1" id="nm_desa" name="nm_desa"
-                                            value="<?=$row['nm_desa'];?>" required>
+                                        <label for="program" class="col-form-label">Nama Program Bantuan:</label>
+                                        <input type="text" class="form-control mt-1" id="program" name="program"
+                                            value="<?=$row['nm_program'] ?>" required>
                                     </div>
 
                                     <div class="modal-footer">

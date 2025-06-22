@@ -1,11 +1,7 @@
 <?php 
  session_start();
-if (!isset($_SESSION["admin"])){
+if (!isset($_SESSION["Admin"])){
     header("location:../index.php");
-    exit;
-}
-if (isset($_SESSION["pegawai"])){
-    header("location:admin/index.php");
     exit;
 }
 
@@ -19,13 +15,13 @@ if (isset($_SESSION["pegawai"])){
   $pegawai=query("SELECT id_pegawai FROM pegawai WHERE id_pegawai='$id_pegawai'")[0];
 
   $jml_DataHalaman = 5;
-  $jml_responden = count(query("SELECT * FROM kat_pmks  WHERE is_delete=1 ORDER BY id_kat_pmks"));
+  $jml_responden = count(query("SELECT * FROM kat_pmks  WHERE is_delete=0 ORDER BY id_kat_pmks"));
   $jml_Halaman = ceil($jml_responden / $jml_DataHalaman);
 
   $pageAktif = (isset($_GET["page"]) ) ? $_GET["page"] : 1;
   $awaldata = ( $jml_DataHalaman * $pageAktif ) - $jml_DataHalaman;
 
-  $kat=query("SELECT * FROM kat_pmks  WHERE is_delete=1 ORDER BY id_kat_pmks LIMIT $awaldata, $jml_DataHalaman");
+  $kat=query("SELECT * FROM kat_pmks  WHERE is_delete=0 ORDER BY id_kat_pmks LIMIT $awaldata, $jml_DataHalaman");
 
   if(isset($_POST["tambah"])){
   // var_dump($_POST);die;

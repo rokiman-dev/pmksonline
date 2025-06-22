@@ -4,9 +4,9 @@ require_once __DIR__ . '/vendor/autoload.php';
 require_once "functions.php";
 require_once "config.php";
 
-$kec=query("SELECT * FROM kecamatan WHERE is_delete=1 AND nm_kec!='Tidak Ada'ORDER BY nm_kec ASC");
+$kec=query("SELECT * FROM kecamatan WHERE is_delete=0 AND nm_kec!='Tidak Ada'ORDER BY nm_kec ASC");
 
-$ktr=query("SELECT * FROM kat_pmks WHERE is_delete=1 ORDER By nm_kat ASC");
+$ktr=query("SELECT * FROM kat_pmks WHERE is_delete=0 ORDER By nm_kat ASC");
 $jml_ktr = count($ktr);
 
 
@@ -40,7 +40,7 @@ $data = '
          <tr>
             <td width="30%">
                <center>
-                     <font size="5">Data Kriteria PMKS</font><br>
+                     <font size="5">Data PMKS per Kriteria</font><br>
                </center>
             </td>
          </tr>
@@ -77,7 +77,7 @@ $data = '
                            $result = query("SELECT a.*,b.*,c.* FROM pmks a 
                                                  INNER JOIN kecamatan b USING (id_kec)
                                                  INNER JOIN kat_pmks c USING (id_kat_pmks) 
-                                                 WHERE a.is_delete=1 
+                                                 WHERE a.is_delete=0 
                                                  AND b.id_kec = $id_kec AND c.id_kat_pmks = $id_kat");
                            $jml =count($result);
                $data .= '<td style="text-align:center;"><font size="3">'. $jml . '</font></td>';
@@ -86,7 +86,7 @@ $data = '
                $result_tot = query("SELECT a.*,b.*,c.* FROM pmks a 
                                                  INNER JOIN kecamatan b USING (id_kec)
                                                  INNER JOIN kat_pmks c USING (id_kat_pmks) 
-                                                 WHERE a.is_delete=1 
+                                                 WHERE a.is_delete=0 
                                                  AND b.id_kec = $id_kec");
                           $jml_tot =count($result_tot);
                $data .= '<td style="text-align:center;"><font size="3">'. $jml_tot . '</font></td>';
@@ -100,7 +100,7 @@ $data = '
                           $result_tol = query("SELECT a.*,b.*,c.* FROM pmks a 
                                                  INNER JOIN kecamatan b USING (id_kec)
                                                  INNER JOIN kat_pmks c USING (id_kat_pmks) 
-                                                 WHERE a.is_delete=1 
+                                                 WHERE a.is_delete=0 
                                                  AND c.id_kat_pmks = $id_kat2");
                            $jml_tot =count($result_tol);
 
@@ -110,7 +110,7 @@ $data = '
              $result_tol2 = query("SELECT a.*,b.*,c.* FROM pmks a 
                                                  INNER JOIN kecamatan b USING (id_kec)
                                                  INNER JOIN kat_pmks c USING (id_kat_pmks) 
-                                                 WHERE a.is_delete=1 ");
+                                                 WHERE a.is_delete=0 ");
                            $jml_tot2 =count($result_tol2);
 
              $data .= '<td style="text-align:center;"><font size="3">'. $jml_tot2 . '</font></td>

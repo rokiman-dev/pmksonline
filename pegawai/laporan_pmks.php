@@ -1,11 +1,7 @@
 <?php
 session_start();
-if (!isset($_SESSION["admin"])) {
+if (!isset($_SESSION["Pegawai"])) {
     header("location:../index.php");
-    exit;
-}
-if (isset($_SESSION["pimpinan"]) || isset($_SESSION["pegawai"])) {
-    header("location:admin/index.php");
     exit;
 }
 
@@ -16,7 +12,7 @@ include('templetes/topbar.php');
 require_once "../functions.php";
 
 $jml_DataHalaman = 5;
-$jml_responden = count(query("SELECT id_pmks FROM pmks WHERE is_delete = 1"));
+$jml_responden = count(query("SELECT id_pmks FROM pmks WHERE is_delete=0"));
 $jml_Halaman = ceil($jml_responden / $jml_DataHalaman);
 
 $pageAktif = (isset($_GET["page"])) ? $_GET["page"] : 1;
@@ -27,7 +23,7 @@ $pmks = query("SELECT a.*, b.nm_kat AS jenis_akses, c.nm_program AS sub_menu, d.
                LEFT JOIN kat_pmks b ON a.id_kat_pmks = b.id_kat_pmks
                LEFT JOIN program_bantuan c ON a.id_program = c.id_program
                LEFT JOIN kecamatan d ON a.id_kec = d.id_kec
-               WHERE a.is_delete = 1 
+               WHERE a.is_delete=0 
                ORDER BY d.nm_kec ASC 
                LIMIT $awaldata, $jml_DataHalaman");
 ?>
@@ -96,6 +92,7 @@ $pmks = query("SELECT a.*, b.nm_kat AS jenis_akses, c.nm_program AS sub_menu, d.
             </div>
         </div>
     </div>
+</div>
 </div>
 <!-- End of Main Content -->
 

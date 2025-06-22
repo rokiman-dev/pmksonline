@@ -1,9 +1,5 @@
 <?php 
 session_start();
-if (!isset($_SESSION["Admin"])) {
-    header("location:../index.php");
-    exit;
-}
 
 require_once "../config.php";
 require_once "../functions.php";

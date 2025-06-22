@@ -1,11 +1,7 @@
 <?php 
 session_start();
-if (!isset($_SESSION["admin"])){
+if (!isset($_SESSION["Admin"])){
     header("location:../index.php");
-    exit;
-}
-if (isset($_SESSION["pegawai"])){
-    header("location:admin/index.php");
     exit;
 }
 
@@ -17,13 +13,13 @@ if (isset($_SESSION["pegawai"])){
   require_once "../functions.php";
 
   $jml_DataHalaman = 5;
-  $jml_responden = count(query("SELECT * FROM kecamatan WHERE is_delete=1 AND nm_kec!='Tidak Ada'ORDER BY nm_kec ASC"));
+  $jml_responden = count(query("SELECT * FROM kecamatan WHERE is_delete=0 AND nm_kec!='Tidak Ada'ORDER BY nm_kec ASC"));
   $jml_Halaman = ceil($jml_responden / $jml_DataHalaman);
 
   $pageAktif = (isset($_GET["page"]) ) ? $_GET["page"] : 1;
   $awaldata = ( $jml_DataHalaman * $pageAktif ) - $jml_DataHalaman;
 
-  $kec=query("SELECT * FROM kecamatan WHERE is_delete=1 AND nm_kec!='Tidak Ada'ORDER BY nm_kec ASC LIMIT $awaldata, $jml_DataHalaman");
+  $kec=query("SELECT * FROM kecamatan WHERE is_delete=0 AND nm_kec!='Tidak Ada'ORDER BY nm_kec ASC LIMIT $awaldata, $jml_DataHalaman");
 
 ?>
 
@@ -40,7 +36,7 @@ if (isset($_SESSION["pegawai"])){
         </div>
 
         <?php 
-                $prog=query("SELECT * FROM program_bantuan WHERE is_delete=1 ORDER By nm_program ASC");
+                $prog=query("SELECT * FROM program_bantuan WHERE is_delete=0 ORDER By nm_program ASC");
                 $jml_prog = count($prog);
                  ?>
 
@@ -84,7 +80,7 @@ if (isset($_SESSION["pegawai"])){
                            $result = query("SELECT a.*,b.*,c.* FROM pmks a 
                                                  INNER JOIN kecamatan b USING (id_kec)
                                                  INNER JOIN program_bantuan c USING (id_program) 
-                                                 WHERE a.is_delete=1 
+                                                 WHERE a.is_delete=0 
                                                  AND b.id_kec = $id_kec AND c.id_program = $id_prog");
                            $jml =count($result);
 
@@ -96,7 +92,7 @@ if (isset($_SESSION["pegawai"])){
                           $result_tot = query("SELECT a.*,b.*,c.* FROM pmks a 
                                                  INNER JOIN kecamatan b USING (id_kec)
                                                  INNER JOIN program_bantuan c USING (id_program) 
-                                                 WHERE a.is_delete=1 
+                                                 WHERE a.is_delete=0 
                                                  AND b.id_kec = $id_kec");
                            $jml_tot =count($result_tot);
                          ?>
@@ -115,7 +111,7 @@ if (isset($_SESSION["pegawai"])){
                           $result_tol = query("SELECT a.*,b.*,c.* FROM pmks a 
                                                  INNER JOIN kecamatan b USING (id_kec)
                                                  INNER JOIN program_bantuan c USING (id_program) 
-                                                 WHERE a.is_delete=1 
+                                                 WHERE a.is_delete=0 
                                                  AND c.id_program = $id_prog2");
                            $jml_tot2 =count($result_tol); ?>
                             <td class="text-center"><b><?=$jml_tot2 ?></b></td>
@@ -124,7 +120,7 @@ if (isset($_SESSION["pegawai"])){
                           $result_tol2 = query("SELECT a.*,b.*,c.* FROM pmks a 
                                                  INNER JOIN kecamatan b USING (id_kec)
                                                  INNER JOIN program_bantuan c USING (id_program) 
-                                                 WHERE a.is_delete=1 ");
+                                                 WHERE a.is_delete=0 ");
                            $jml_tot3 =count($result_tol2); ?>
                             <td class="text-center"><b><?=$jml_tot3 ?></b></td>
                         </tr>

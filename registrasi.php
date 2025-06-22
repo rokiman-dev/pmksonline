@@ -60,54 +60,54 @@ if (isset($_POST["register"])) {
                             <div class="col-lg-12">
                                 <div class="p-5">
                                     <div class="text-center">
-                                        <img src="assets/img/pmks.png" style="width: 100px; height: 120px;">
+                                        <img src="assets/img/logo-pmks.png" style="width: 100px; height: 120px;">
                                         <hr>
                                         <h1 class="h4 text-gray-900 mb-4">Registrasi Akun</h1>
                                     </div>
 
                                     <form class="user" action="" method="post">
 
-
                                         <div class="form-group">
                                             <input type="text" name="nama" id="nama" placeholder="Nama Lengkap"
-                                                class="form-control form-control-user">
+                                                class="form-control form-control-user" required>
                                         </div>
 
                                         <div class="form-group">
                                             <input type="text" name="nip" id="nip" placeholder="NIP"
-                                                class="form-control form-control-user">
+                                                class="form-control form-control-user" required>
                                         </div>
 
                                         <div class="form-group">
                                             <input type="text" name="no_tlp" id="no_tlp" placeholder="No Telepon"
-                                                class="form-control form-control-user">
+                                                class="form-control form-control-user" required>
                                         </div>
 
                                         <div class="form-group">
                                             <input type="text" name="alamat" id="alamat" placeholder="Alamat"
-                                                class="form-control form-control-user">
+                                                class="form-control form-control-user" required>
                                         </div>
 
                                         <div class="form-group">
                                             <input type="text" name="username" id="username" placeholder="Username"
-                                                class="form-control form-control-user">
+                                                class="form-control form-control-user" required>
                                         </div>
 
                                         <div class="form-group">
                                             <input type="password" name="password" id="password" placeholder="Password"
-                                                class="form-control form-control-user" placeholder="Password">
+                                                class="form-control form-control-user" required>
                                         </div>
 
                                         <div class="form-group">
                                             <input type="password" name="password2" id="password2"
-                                                placeholder="Konfirmasi Password"
-                                                class="form-control form-control-user">
+                                                placeholder="Konfirmasi Password" class="form-control form-control-user"
+                                                required>
                                         </div>
 
-                                        <input class="input100" type="hidden" name="role" id="role" value="Pegawai">
-                                        <input class="input100" type="hidden" name="time_input" id="time_input"
-                                            value="<?=date("Y-m-d H:i:s"); ?>">
-
+                                        <!-- Hidden default values -->
+                                        <input type="hidden" name="role" id="role" value="Pegawai">
+                                        <input type="hidden" name="foto" id="foto" value="default.png">
+                                        <input type="hidden" name="time_input" id="time_input"
+                                            value="<?= date("Y-m-d H:i:s"); ?>">
                                         <div class="form-group">
                                             <button class="btn btn-primary btn-user btn-block" type="submit"
                                                 name="register">
@@ -119,7 +119,6 @@ if (isset($_POST["register"])) {
                                         <div class="text-center">
                                             <a class="small" href="index.php">Login</a>
                                         </div>
-
                                     </form>
 
                                 </div>

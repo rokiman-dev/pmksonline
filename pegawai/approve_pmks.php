@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (!isset($_SESSION["Admin"])) {
+if (!isset($_SESSION["Pegawai"])) {
   header("location:../index.php");
   exit;
 }

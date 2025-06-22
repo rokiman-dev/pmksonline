@@ -1,15 +1,12 @@
 <?php 
 session_start();
-
-if (!isset($_SESSION["admin"])){
+// echo "<pre>";
+// print_r($_SESSION);
+// echo "</pre>";
+if (!isset($_SESSION["Admin"])){
     header("location:../index.php");
     exit;
 }
-if (isset($_SESSION["pegawai"])){
-    header("location:admin/index.php");
-    exit;
-}
-
 
   $page = "index";
   date_default_timezone_set('Asia/Jakarta');
@@ -42,7 +39,7 @@ if (isset($_SESSION["pegawai"])){
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-h3 font-weight-bold text-primary text-uppercase mb-1">Pegawai</div>
-                            <?php $pegawai = query("SELECT * FROM pegawai WHERE is_delete=1 ");
+                            <?php $pegawai = query("SELECT * FROM pegawai WHERE is_delete=0 ");
                         $jml_pegawai = count($pegawai); ?>
                             <div class="h5 mb-0 font-weight-bold text-gray-800"><?=$jml_pegawai?> Pegawai</div>
                         </div>
@@ -63,7 +60,7 @@ if (isset($_SESSION["pegawai"])){
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-h3 font-weight-bold text-primary text-uppercase mb-1">Kecamatan</div>
-                            <?php $kecamatan = query("SELECT * FROM kecamatan WHERE is_delete=1 AND nm_kec != 'Tidak Ada'");
+                            <?php $kecamatan = query("SELECT * FROM kecamatan WHERE is_delete=0 AND nm_kec != 'Tidak Ada'");
                         $jml_kecamatan = count($kecamatan); ?>
                             <div class="h5 mb-0 font-weight-bold text-gray-800"><?=$jml_kecamatan?> Kecamatan</div>
                         </div>
@@ -77,29 +74,7 @@ if (isset($_SESSION["pegawai"])){
             </div>
         </div>
 
-
         <!-- Earnings (Monthly) Card Example -->
-
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-h3 font-weight-bold text-primary text-uppercase mb-1">Kelurahan / Desa
-                            </div>
-                            <?php $desa = query("SELECT * FROM desa WHERE is_delete=1 AND nm_desa != 'Tidak Ada'");
-                        $jml_desa = count($desa); ?>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?=$jml_desa?> Kelurahan / Desa</div>
-                        </div>
-                        <div class="col-auto">
-                            <a href="desa.php">
-                                <i class="fas fa-map-marker-alt fa-2x text-gray-300"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- Earnings (Monthly) Card Example -->
 
@@ -109,7 +84,7 @@ if (isset($_SESSION["pegawai"])){
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-h3 font-weight-bold text-primary text-uppercase mb-1">Program Bantuan</div>
-                            <?php $program_bantuan = query("SELECT * FROM program_bantuan WHERE is_delete=1");
+                            <?php $program_bantuan = query("SELECT * FROM program_bantuan WHERE is_delete=0");
                         $jml_program_bantuan = count($program_bantuan); ?>
                             <div class="h5 mb-0 font-weight-bold text-gray-800"><?=$jml_program_bantuan?> Program
                                 Bantuan</div>
@@ -133,7 +108,7 @@ if (isset($_SESSION["pegawai"])){
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-h3 font-weight-bold text-primary text-uppercase mb-1">Kategori PMKS</div>
-                            <?php $kat_pmks = query("SELECT * FROM kat_pmks WHERE is_delete=1");
+                            <?php $kat_pmks = query("SELECT * FROM kat_pmks WHERE is_delete=0");
                         $jml_kat_pmks = count($kat_pmks); ?>
                             <div class="h5 mb-0 font-weight-bold text-gray-800"><?=$jml_kat_pmks?> Kategori PMKS</div>
                         </div>
@@ -159,7 +134,7 @@ if (isset($_SESSION["pegawai"])){
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-h3 font-weight-bold text-primary text-uppercase mb-1">PMKS</div>
-                            <?php $pmks = query("SELECT * FROM pmks WHERE is_delete=1");
+                            <?php $pmks = query("SELECT * FROM pmks WHERE is_delete=0");
                         $jml_pmks = count($pmks); ?>
                             <div class="h5 mb-0 font-weight-bold text-gray-800"><?=$jml_pmks?> PMKS</div>
                         </div>

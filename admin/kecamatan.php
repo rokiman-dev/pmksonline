@@ -1,11 +1,7 @@
 <?php 
  session_start();
-if (!isset($_SESSION["admin"])){
+if (!isset($_SESSION["Admin"])){
     header("location:../index.php");
-    exit;
-}
-if (isset($_SESSION["pegawai"])){
-    header("location:admin/index.php");
     exit;
 }
 
@@ -20,13 +16,13 @@ if (isset($_SESSION["pegawai"])){
   $pegawai=query("SELECT id_pegawai FROM pegawai WHERE id_pegawai='$id_pegawai'")[0];
 
   $jml_DataHalaman = 5;
-  $jml_responden = count(query( "SELECT * FROM kecamatan WHERE is_delete=1 AND nm_kec!= 'Tidak Ada' ORDER BY id_kec"));
+  $jml_responden = count(query( "SELECT * FROM kecamatan WHERE is_delete=0 AND nm_kec!= 'Tidak Ada' ORDER BY id_kec"));
   $jml_Halaman = ceil($jml_responden / $jml_DataHalaman);
 
   $pageAktif = (isset($_GET["page"]) ) ? $_GET["page"] : 1;
   $awaldata = ( $jml_DataHalaman * $pageAktif ) - $jml_DataHalaman;
 
-  $kec=query("SELECT * FROM kecamatan WHERE is_delete=1 AND nm_kec!= 'Tidak Ada' ORDER BY id_kec LIMIT $awaldata, $jml_DataHalaman");
+  $kec=query("SELECT * FROM kecamatan WHERE is_delete=0 AND nm_kec!= 'Tidak Ada' ORDER BY id_kec LIMIT $awaldata, $jml_DataHalaman");
   // var_dump($kecamatan);die;
 
   if(isset($_POST["tambah"])){

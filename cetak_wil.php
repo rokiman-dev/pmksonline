@@ -4,11 +4,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 require_once "functions.php";
 require_once "config.php";
 
-$desa=query("SELECT a.*,b.id_kec,b.nm_kec,b.is_delete FROM desa a 
-               INNER JOIN kecamatan b USING (id_kec) WHERE a.is_delete=1 AND b.is_delete=1 
-               AND a.nm_desa!='Tidak Ada' AND b.nm_kec!='Tidak Ada'
-               ORDER BY b.nm_kec ASC");
-
+$kecamatan = query("SELECT * FROM kecamatan WHERE is_delete=0 AND nm_kec != 'Tidak Ada' ORDER BY nm_kec ASC");
 
 $mpdf = new \Mpdf\Mpdf(['format' => 'A4']);
 $data = '
@@ -40,44 +36,38 @@ $data = '
          <tr>
             <td width="30%">
                <center>
-                     <font size="5">Data PMKS Wilayah Desa / Kelurahan</font><br>
+                     <font size="5">Data PMKS per Kecamatan</font><br>
                </center>
             </td>
          </tr>
    </table>
    <br>
 
-
    <table border="1" cellpadding="10" cellspacing="0" autosize="1" width="100%">
-            <tr>
-               <th><font size="3">No</font></th>
-               <th><font size="3">Kecamatan</font></th>
-               <th><font size="3">Kelurahan</font></th>
-               <th><font size="3">Jumlah PMKS</font></th>
-            </tr>';
+      <tr>
+         <th><font size="3">No</font></th>
+         <th><font size="3">Kecamatan</font></th>
+         <th><font size="3">Jumlah PMKS</font></th>
+      </tr>';
 
-            $i = 1;
-            foreach ($desa as $row) {
-            	    $id_desa = $row['id_desa'];
-                    $jml_pmks = count(query("SELECT a.*,d.is_delete FROM pmks a 
-                     INNER JOIN kk d USING (id_kk)
-                     WHERE a.is_delete = 1 AND d.is_delete = 1 AND a.id_desa=$id_desa"));
+$i = 1;
+foreach ($kecamatan as $row) {
+    $id_kec = $row['id_kec'];
+    $jml_pmks = count(query("SELECT id_pmks FROM pmks WHERE is_delete=0 AND id_kec = $id_kec"));
 
-               $data .= '<tr>
-                              <td style="text-align:center;"><font size="3">'. $i++ . '</font></td>
-                              <td style="text-align:center;"><font size="3">'. $row["nm_kec"] .'</font></td>
-                              <td style="text-align:center;"><font size="3">'. $row["nm_desa"] .'</font></td>
-                              <td style="text-align:center;"><font size="3">'. $jml_pmks .'</font></td>
-                        </tr>';
-            }
-            	$data .= '<tr>
-                              <td colspan="3" style="text-align:center;"><font size="3"><b>Jumlah</b></font></td>';
+    $data .= '<tr>
+        <td style="text-align:center;"><font size="3">'. $i++ .'</font></td>
+        <td style="text-align:center;"><font size="3">'. $row["nm_kec"] .'</font></td>
+        <td style="text-align:center;"><font size="3">'. $jml_pmks .'</font></td>
+    </tr>';
+}
 
-            	$result_tol2 = query("SELECT * FROM pmks WHERE is_delete=1 ");
-                $jml_tot2 =count($result_tol2);
+$total_pmks = count(query("SELECT id_pmks FROM pmks WHERE is_delete=0"));
 
-                $data .= '    <td colspan="3" style="text-align:center;"><font size="3"><b>'. $jml_tot2 .'</b></font></td>
-                		 </tr>';
+$data .= '<tr>
+      <td colspan="2" style="text-align:center;"><font size="3"><b>Jumlah</b></font></td>
+      <td style="text-align:center;"><font size="3"><b>'. $total_pmks .'</b></font></td>
+</tr>';
 
 $data .= '</table>
 <br>
@@ -98,8 +88,7 @@ $data .= '</table>
      <td width="50%" style="text-align:center;"><font size="3">Kepala Bidang Sekretariat</font></td>
    </tr>
  </table>
- <br>
- <br>
+ <br><br>
  <table border="0" autosize="1" width="100%">
    <tr>
      <td></td>
@@ -121,7 +110,7 @@ $data .= '</table>
 </body>
 </html>
 ';
-$mpdf->Image('assets/img/logo.png',0,0,210,297,'png','',true,false);
+
+$mpdf->Image('assets/img/logo.png', 0, 0, 210, 297, 'png', '', true, false);
 $mpdf->WriteHTML($data);
 $mpdf->Output();
-?>

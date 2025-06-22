@@ -2,7 +2,7 @@
 
 require_once "../functions.php";
 $idp = $_SESSION["id_pegawai"];
-$pg = query("SELECT * FROM pegawai WHERE is_delete=1 AND id_pegawai = $idp")[0];
+$pg = query("SELECT * FROM pegawai WHERE is_delete=0 AND id_pegawai = $idp")[0];
 
 ?>
 <!-- Topbar Navbar -->

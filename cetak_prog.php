@@ -4,9 +4,9 @@ require_once __DIR__ . '/vendor/autoload.php';
 require_once "functions.php";
 require_once "config.php";
 
- $kec=query("SELECT * FROM kecamatan WHERE is_delete=1 AND nm_kec!='Tidak Ada'ORDER BY nm_kec ASC");
+ $kec=query("SELECT * FROM kecamatan WHERE is_delete=0 AND nm_kec!='Tidak Ada'ORDER BY nm_kec ASC");
 
-$prog=query("SELECT * FROM program_bantuan WHERE is_delete=1 ORDER By nm_program ASC");
+$prog=query("SELECT * FROM program_bantuan WHERE is_delete=0 ORDER By nm_program ASC");
 $jml_prog = count($prog);
 
 
@@ -77,7 +77,7 @@ $data = '
                            $result = query("SELECT a.*,b.*,c.* FROM pmks a 
                                                  INNER JOIN kecamatan b USING (id_kec)
                                                  INNER JOIN program_bantuan c USING (id_program) 
-                                                 WHERE a.is_delete=1 
+                                                 WHERE a.is_delete=0 
                                                  AND b.id_kec = $id_kec AND c.id_program = $id_prog");
                            $jml =count($result);
                $data .= '<td style="text-align:center;"><font size="3">'. $jml . '</font></td>';
@@ -86,7 +86,7 @@ $data = '
                $result_tot = query("SELECT a.*,b.*,c.* FROM pmks a 
                                                  INNER JOIN kecamatan b USING (id_kec)
                                                  INNER JOIN program_bantuan c USING (id_program) 
-                                                 WHERE a.is_delete=1 
+                                                 WHERE a.is_delete=0 
                                                  AND b.id_kec = $id_kec");
                            $jml_tot =count($result_tot);
                $data .= '<td style="text-align:center;"><font size="3">'. $jml_tot . '</font></td>';
@@ -100,7 +100,7 @@ $data = '
                           $result_tol = query("SELECT a.*,b.*,c.* FROM pmks a 
                                                  INNER JOIN kecamatan b USING (id_kec)
                                                  INNER JOIN program_bantuan c USING (id_program) 
-                                                 WHERE a.is_delete=1 
+                                                 WHERE a.is_delete=0 
                                                  AND c.id_program = $id_prog2");
                            $jml_tot2 =count($result_tol);
 
@@ -110,7 +110,7 @@ $data = '
              $result_tol2 = query("SELECT a.*,b.*,c.* FROM pmks a 
                                                  INNER JOIN kecamatan b USING (id_kec)
                                                  INNER JOIN program_bantuan c USING (id_program) 
-                                                 WHERE a.is_delete=1 ");
+                                                 WHERE a.is_delete=0 ");
                            $jml_tot3 =count($result_tol2);
 
              $data .= '<td style="text-align:center;"><font size="3">'. $jml_tot3 . '</font></td>

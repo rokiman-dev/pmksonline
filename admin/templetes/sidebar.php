@@ -39,9 +39,6 @@
 
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.php">
-                <!-- <div class="sidebar-brand-icon">
-          <i class="fas fa-laptop-code"></i>
-        </div> -->
                 <style type="text/css">
                 .size {
                     width: 45px;
@@ -119,11 +116,7 @@
             } else {
                 echo "class='nav-item' ";
             } ?> >
-        <a class="nav-link" href="admin.php" >
-         <i class="fas fa-user-cog"></i>
-          <span>Input Data Admin</span>
-        </a>
-      </li> -->
+
 
             <!-- Nav Item - wilayah -->
             <li <?php if($page == "wilayah") { 
@@ -149,11 +142,7 @@
               echo "class='collapse-item' ";
             } ?> href="kecamatan.php">Input Data Kecamatan</a>
 
-                        <a <?php if($page == "wilayah" AND $page1 == "desa") { 
-              echo "class='collapse-item active' "; 
-            } else {
-              echo "class='collapse-item' ";
-            } ?> href="desa.php">Input Data Desa</a>
+
                     </div>
                 </div>
             </li>
@@ -164,7 +153,7 @@
             } else {
                 echo "class='nav-item' ";
             } ?>>
-                <a class="nav-link" href="pmks_trial.php">
+                <a class="nav-link" href="pmks.php">
                     <i class="fas fa-book"></i>
                     <span>Data PMKS</span>
                 </a>
@@ -191,7 +180,7 @@
               echo "class='collapse-item active' "; 
             } else {
               echo "class='collapse-item' ";
-            } ?> href="laporan.php">Laporan PMKS</a>
+            } ?> href="laporan_pmks.php">Laporan PMKS</a>
 
                         <a <?php if($page == "laporan" AND $page1 == "wil") { 
               echo "class='collapse-item active' "; 

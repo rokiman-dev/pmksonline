@@ -1,11 +1,7 @@
 <?php
 session_start();
-if (!isset($_SESSION["admin"])) {
+if (!isset($_SESSION["Admin"])) {
   header("location:../index.php");
-  exit;
-}
-if (isset($_SESSION["pegawai"])) {
-  header("location:admin/index.php");
   exit;
 }
 
@@ -16,13 +12,13 @@ include('templetes/topbar.php');
 require_once "../functions.php";
 
 $jml_DataHalaman = 5;
-$jml_responden = count(query("SELECT * FROM pegawai WHERE is_delete=1 ORDER BY id_pegawai"));
+$jml_responden = count(query("SELECT * FROM pegawai WHERE is_delete=0 ORDER BY id_pegawai"));
 $jml_Halaman = ceil($jml_responden / $jml_DataHalaman);
 
 $pageAktif = (isset($_GET["page"]) ) ? $_GET["page"] : 1;
 $awaldata = ( $jml_DataHalaman * $pageAktif ) - $jml_DataHalaman;
 
-$pegawai = query("SELECT * FROM pegawai WHERE is_delete=1 ORDER BY id_pegawai");
+$pegawai = query("SELECT * FROM pegawai WHERE is_delete=0 ORDER BY id_pegawai");
 
 
 if (isset($_POST["hapus"])) {
