@@ -61,16 +61,6 @@ if (isset($_POST["hapus"])) {
     }
 }
 
-if (isset($_POST["approve"])) {
-    $id = $_POST['id_pmks'];
-    $update = mysqli_query($koneksi, "UPDATE pmks SET status = 'Selesai' WHERE id_pmks = $id");
-    if ($update) {
-        echo "<script>alert('PMKS berhasil diapprove'); location.href='pmks.php';</script>";
-    } else {
-        echo "<script>alert('Gagal approve PMKS'); location.href='pmks.php';</script>";
-    }
-}
-
 if (isset($_POST['edit'])) {
     if (editDataPmks($_POST) > 0) {
         echo "<script>alert('Data berhasil diperbarui!'); window.location.href='pmks.php';</script>";
@@ -126,7 +116,8 @@ if (isset($_POST['edit'])) {
                                     <?php
         $status = $row['status'];
         $class = ($status === 'Selesai') ? 'badge-success' :
-                 (($status === 'Menunggu') ? 'badge-warning' : 'badge-secondary');
+         (($status === 'Menunggu') ? 'badge-warning' :
+         (($status === 'Diproses') ? 'badge-info' : 'badge-secondary'));
     ?>
                                     <span class="badge <?= $class ?> d-inline-block text-white"
                                         style="min-width: 80px;">
@@ -136,13 +127,6 @@ if (isset($_POST['edit'])) {
 
                                 <!-- Kolom Tombol Aksi -->
                                 <td class="text-center">
-                                    <?php if ($row['status'] === 'Menunggu') : ?>
-                                    <a href="approve_pmks.php?id=<?= $row['id_pmks']; ?>" class="btn btn-success btn-sm"
-                                        onclick="return confirm('Setujui PMKS ini?');">
-                                        <i class="fas fa-check-circle"></i>
-                                    </a>
-                                    <?php endif; ?>
-
                                     <!-- Tombol Edit -->
                                     <button type="button" class="btn btn-warning btn-sm" data-toggle="modal"
                                         data-target="#modalEdit<?= $row['id_pmks']; ?>">

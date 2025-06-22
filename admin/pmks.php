@@ -59,13 +59,16 @@ if (isset($_POST["hapus"])) {
     }
 }
 
-if (isset($_POST["approve"])) {
-    $id = $_POST['id_pmks'];
-    $update = mysqli_query($koneksi, "UPDATE pmks SET status = 'Selesai' WHERE id_pmks = $id");
+if (isset($_POST["ubah_status"])) {
+    $id = (int) $_POST['id_pmks'];
+    $status = $_POST['status'];
+    $status = mysqli_real_escape_string($koneksi, $status);
+
+    $update = mysqli_query($koneksi, "UPDATE pmks SET status = '$status' WHERE id_pmks = $id");
     if ($update) {
-        echo "<script>alert('PMKS berhasil diapprove'); location.href='pmks.php';</script>";
+        echo "<script>alert('Status berhasil diperbarui'); location.href='pmks.php';</script>";
     } else {
-        echo "<script>alert('Gagal approve PMKS'); location.href='pmks.php';</script>";
+        echo "<script>alert('Gagal memperbarui status'); location.href='pmks.php';</script>";
     }
 }
 
@@ -123,7 +126,9 @@ if (isset($_POST['edit'])) {
                                 <?php
         $status = $row['status'];
         $class = ($status === 'Selesai') ? 'badge-success' :
-                 (($status === 'Menunggu') ? 'badge-warning' : 'badge-secondary');
+         (($status === 'Menunggu') ? 'badge-warning' :
+         (($status === 'Diproses') ? 'badge-info' : 'badge-secondary'));
+
     ?>
                                 <span class="badge <?= $class ?> d-inline-block text-white" style="min-width: 80px;">
                                     <?= $status; ?>
@@ -132,12 +137,11 @@ if (isset($_POST['edit'])) {
 
                             <!-- Kolom Tombol Aksi -->
                             <td class="text-center">
-                                <?php if ($row['status'] === 'Menunggu') : ?>
-                                <a href="approve_pmks.php?id=<?= $row['id_pmks']; ?>" class="btn btn-success btn-sm"
-                                    onclick="return confirm('Setujui PMKS ini?');">
-                                    <i class="fas fa-check-circle"></i>
-                                </a>
-                                <?php endif; ?>
+                                <!-- Tombol Ubah Status -->
+                                <button type="button" class="btn btn-success btn-sm" data-toggle="modal"
+                                    data-target="#modalStatus<?= $row['id_pmks']; ?>">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
 
                                 <!-- Tombol Edit -->
                                 <button type="button" class="btn btn-warning btn-sm" data-toggle="modal"
@@ -218,6 +222,44 @@ if (isset($_POST['edit'])) {
 
                                         <div class="modal-footer">
                                             <button type="submit" name="edit" class="btn btn-warning">Simpan</button>
+                                            <button type="button" class="btn btn-secondary"
+                                                data-dismiss="modal">Batal</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modal Ubah Status -->
+                        <div class="modal fade" id="modalStatus<?= $row['id_pmks']; ?>" tabindex="-1" role="dialog">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <form method="POST">
+                                        <div class="modal-header bg-success text-white">
+                                            <h5 class="modal-title">Ubah Status PMKS</h5>
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <input type="hidden" name="id_pmks" value="<?= $row['id_pmks']; ?>">
+                                            <div class="form-group">
+                                                <label>Status Baru</label>
+                                                <select name="status" class="form-control" required>
+                                                    <option value="Menunggu"
+                                                        <?= ($row['status'] == 'Menunggu') ? 'selected' : '' ?>>Menunggu
+                                                    </option>
+                                                    <option value="Diproses"
+                                                        <?= ($row['status'] == 'Diproses') ? 'selected' : '' ?>>
+                                                        Diproses
+                                                    </option>
+                                                    <option value="Selesai"
+                                                        <?= ($row['status'] == 'Selesai') ? 'selected' : '' ?>>Selesai
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" name="ubah_status"
+                                                class="btn btn-success">Simpan</button>
                                             <button type="button" class="btn btn-secondary"
                                                 data-dismiss="modal">Batal</button>
                                         </div>
@@ -322,6 +364,8 @@ if (isset($_POST['edit'])) {
         </div>
     </div>
 </div>
+
+
 </div>
 
 
