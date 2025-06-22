@@ -24,70 +24,11 @@ if (!isset($_SESSION["Pegawai"])){
   $prog=query("SELECT * FROM program_bantuan  WHERE is_delete=0 ORDER BY id_program LIMIT $awaldata, $jml_DataHalaman");
   // var_dump($kecamatan);die;
 
-  if(isset($_POST["tambah"])){
-  // var_dump($_POST);die;
-  if(tambahDataProgram($_POST)>0){
-    echo"
-       <script>
-       alert('data berhasil di tambah');
-       document.location.href='program.php';
-       </script>
-       ";
-      }else{
-        echo"
-       <script>
-       alert('data gagal di tambah');
-       document.location.href='program.php';
-       </script>
-       ";
-      }
-}
-
-  if(isset($_POST["hapus"])){
-  // var_dump($_POST);die;
-  if(hapusDataProgram($_POST)>0){
-    echo"
-       <script>
-       alert('data berhasil di hapus');
-       document.location.href='program.php';
-       </script>
-       ";
-      }else{
-        echo"
-       <script>
-       alert('data gagal di hapus');
-       document.location.href='program.php';
-       </script>
-       ";
-      }
-}
-
-  if(isset($_POST["edit"])){
-  // var_dump($_POST);die;
-  if(editDataProgram($_POST)>0){
-    echo"
-       <script>
-       alert('data berhasil di ubah');
-       document.location.href='program.php';
-       </script>
-       ";
-      }else{
-        echo"
-       <script>
-       alert('data gagal di ubah');
-       document.location.href='program.php';
-       </script>
-       ";
-      }
-}
 ?>
-
 <!-- Begin Page Content -->
 <div class="container-fluid">
-
     <!-- Page Heading -->
     <h1 class="h3 mb-4 text-judul">Program Bantuan</h1>
-
     <!-- isi content -->
     <div class="card shadow mb-2">
         <div class="card-header py-3">

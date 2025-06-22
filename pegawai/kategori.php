@@ -22,63 +22,6 @@ if (!isset($_SESSION["Pegawai"])){
   $awaldata = ( $jml_DataHalaman * $pageAktif ) - $jml_DataHalaman;
 
   $kat=query("SELECT * FROM kat_pmks  WHERE is_delete=0 ORDER BY id_kat_pmks LIMIT $awaldata, $jml_DataHalaman");
-
-  if(isset($_POST["tambah"])){
-  // var_dump($_POST);die;
-  if(tambahDataKategori($_POST)>0){
-    echo"
-       <script>
-       alert('data berhasil di tambah');
-       document.location.href='kategori.php';
-       </script>
-       ";
-      }else{
-        echo"
-       <script>
-       alert('data gagal di tambah');
-       document.location.href='kategori.php';
-       </script>
-       ";
-      }
-}
-
-  if(isset($_POST["hapus"])){
-  // var_dump($_POST);die;
-  if(hapusDataKategori($_POST)>0){
-    echo"
-       <script>
-       alert('data berhasil di hapus');
-       document.location.href='kategori.php';
-       </script>
-       ";
-      }else{
-        echo"
-       <script>
-       alert('data gagal di hapus');
-       document.location.href='kategori.php';
-       </script>
-       ";
-      }
-}
-
-  if(isset($_POST["edit"])){
-  // var_dump($_POST);die;
-  if(editDataKategori($_POST)>0){
-    echo"
-       <script>
-       alert('data berhasil di ubah');
-       document.location.href='kategori.php';
-       </script>
-       ";
-      }else{
-        echo"
-       <script>
-       alert('data gagal di ubah');
-       document.location.href='kategori.php';
-       </script>
-       ";
-      }
-}
 ?>
 
 <!-- Begin Page Content -->
