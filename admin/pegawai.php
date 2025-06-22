@@ -155,9 +155,6 @@ if (isset($_POST["edit"])) {
                                             <option value="Admin" <?php if ($row['role'] == "Admin") {
                                                 echo "selected";
                                               } ?>>Admin</option>
-                                            <option value="Pimpinan" <?php if ($row['role'] == "Pimpinan") {
-                                                    echo "selected";
-                                                  } ?>>Pimpinan</option>
                                             <option value="Pegawai" <?php if ($row['role'] == "Pegawai") {
                                                   echo "selected";
                                                 } ?>>Pegawai</option>

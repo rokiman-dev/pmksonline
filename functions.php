@@ -148,60 +148,55 @@ function tambahDataProgram($data)
 
 function hapusDataProgram($data)
 {
-	include('config.php');
+    include('config.php');
 
-	$id_program = $data["id_program"];
+    $id_program = (int) $data["id_program"];
 
-	$query 	= "UPDATE program_bantuan SET is_delete = 0 WHERE id_program='$id_program'";
-	mysqli_query($koneksi, $query);
+    // Soft delete pada program_bantuan
+    $query = "UPDATE program_bantuan SET is_delete = 1 WHERE id_program = $id_program";
+    mysqli_query($koneksi, $query);
 
-	$query1 	= "UPDATE pmks SET is_delete = 0 WHERE id_program='$id_program'";
-	mysqli_query($koneksi, $query1);
+    // Soft delete juga semua data PMKS yang memakai program ini
+    $query1 = "UPDATE pmks SET is_delete = 1 WHERE id_program = $id_program";
+    mysqli_query($koneksi, $query1);
 
-	return mysqli_affected_rows($koneksi);
+    return mysqli_affected_rows($koneksi);
 }
+
 
 function editDataProgram($data)
 {
-	include('config.php');
-	// var_dump($_POST);die;
+    include('config.php');
 
-	$id_program  = $data["id_program"];
+    $id_program   = (int) $data["id_program"];
 
-	$program2 	 = $data["program2"];
-	$is_delete2	 = $data["is_delete2"];
-	$row_edit2 	 = $data["row_edit2"];
-	$creator2    = $data["id_pegawai2"];
-	$time_input2 = $data["time_input2"];
+    // Data baru
+    $program      = mysqli_real_escape_string($koneksi, $data["program"]);
+    $is_delete    = (int) $data["is_delete"];
+    $row_edit     = (int) $data["row_edit"];
+    $creator      = (int) $data["id_pegawai"];
+    $time_input   = mysqli_real_escape_string($koneksi, $data["time_input"]);
 
-	$program 	= htmlspecialchars($data["program"]);
-	$is_delete	= $data["is_delete"];
-	$row_edit 	= $data["row_edit"];
-	$creator    = $data["id_pegawai"];
-	$time_input = $data["time_input"];
+    // Cek apakah program yang sama pernah dihapus sebelumnya
+    $cek = mysqli_query($koneksi, "SELECT nm_program FROM program_bantuan WHERE nm_program = '$program' AND is_delete = 1");
+    if (mysqli_fetch_assoc($cek)) {
+        echo "<script>alert('Program Bantuan sudah ada (sebelumnya dihapus)!');</script>";
+        return false;
+    }
 
+    // Update data terbaru
+    $query_update = "UPDATE program_bantuan SET 
+        nm_program = '$program',
+        is_delete = $is_delete,
+        row_edit = $row_edit,
+        creator = $creator,
+        time_input = '$time_input'
+        WHERE id_program = $id_program";
+    mysqli_query($koneksi, $query_update);
 
-	// cek program_bantuan sudah ada atau belum
-	$result = mysqli_query($koneksi, "SELECT nm_program FROM program_bantuan WHERE nm_program = '$program' AND is_delete=1");
-
-	if (mysqli_fetch_assoc($result)) {
-		echo "<script>
- 				alert('Program Bantuan sudah Ada!')
- 			  </script>";
-		return false;
-	}
-
-	$query = "UPDATE program_bantuan SET 
- 				   	 nm_program='$program', is_delete='$is_delete', 
- 				   	 row_edit='$row_edit', creator='$creator',
- 				   	 time_input='$time_input' WHERE id_program='$id_program'";
-
-	mysqli_query($koneksi, $query);
-	$query2 = "INSERT INTO program_bantuan VAlUES ('','$program2','$is_delete2','$row_edit2','$creator2','$time_input2')";
-	mysqli_query($koneksi, $query2);
-
-	return mysqli_affected_rows($koneksi);
+    return mysqli_affected_rows($koneksi);
 }
+
 
 function tambahDataKategori($data)
 {

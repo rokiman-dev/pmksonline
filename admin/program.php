@@ -152,102 +152,72 @@ if (!isset($_SESSION["Admin"])){
                 </div>
             </div>
 
-            <!-- Modal Tambah Data -->
-            <div class="modal fade" id="modalTambah" tabindex="-2" role="dialog" aria-labelledby="modalTambahTitle"
-                aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <form method="POST" enctype="multipart/form-data">
-                            <div class="modal-header modal-bg" back>
-                                <h5 class="modal-title modal-text" id="modalTambahTitle">Tambah Program Bantuan</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
+            <!-- Modal Tambah -->
+            <div class="modal fade" id="modalTambah" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <form method="POST">
+                        <div class="modal-content">
+                            <div class="modal-header bg-primary text-white">
+                                <h5 class="modal-title">Tambah Program Bantuan</h5>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
                             </div>
                             <div class="modal-body">
-                                <form>
-                                    <div class="form-group">
-                                        <label for="program" class="col-form-label">Nama Program Bantuan:</label>
-                                        <input type="text" class="form-control mt-1" id="program" name="program"
-                                            required>
-                                    </div>
+                                <label>Nama Program Bantuan</label>
+                                <input type="text" name="program" class="form-control" required>
 
-                                    <input type="hidden" class="form-control mt-1" id="is_delete" name="is_delete"
-                                        value="0">
-                                    <input type="hidden" class="form-control mt-1" id="row_edit" name="row_edit"
-                                        value="0">
-                                    <input type="hidden" class="form-control mt-1" id="id_pegawai" name="id_pegawai"
-                                        value="<?= $pegawai['id_pegawai'] ?>">
-                                    <input class="input100" type="hidden" name="time_input" id="time_input"
-                                        value="<?=date("Y-m-d H:i:s"); ?>">
-
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary"
-                                            data-dismiss="modal">Cancel</button>
-                                        <button type="submit" name="tambah" class="btn btn-primary">Insert</button>
-                                    </div>
-                                </form>
+                                <input type="hidden" name="is_delete" value="0">
+                                <input type="hidden" name="id_pegawai" value="<?= $pegawai['id_pegawai'] ?>">
+                                <input type="hidden" name="time_input" value="<?= date("Y-m-d H:i:s"); ?>">
                             </div>
-                        </form>
-                    </div>
+                            <div class="modal-footer">
+                                <button type="submit" name="tambah" class="btn btn-primary">Tambah</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
+
 
             <!-- Modal Edit Data -->
             <?php foreach ($prog as $row)  : ?>
-            <div class="modal fade" id="modalEdit<?=$row['id_program'] ?>" tabindex="-2" role="dialog"
-                aria-labelledby="modalEditDataTitle" aria-hidden="true">
+            <div class="modal fade" id="modalEdit<?= $row['id_program'] ?>" tabindex="-1" role="dialog"
+                aria-labelledby="modalEditTitle" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
-                        <form method="post" enctype="multipart/form-data">
-                            <div class="modal-header modal-bg" back>
-                                <h5 class="modal-title modal-text" id="modalEditDataTitle">Edit Program Bantuan</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <form method="POST" enctype="multipart/form-data">
+                            <div class="modal-header bg-warning text-white">
+                                <h5 class="modal-title" id="modalEditTitle">Edit Program Bantuan</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Tutup">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
+
                             <div class="modal-body">
-                                <form>
+                                <!-- Hidden Data -->
+                                <input type="hidden" name="id_program" value="<?= $row['id_program'] ?>">
+                                <input type="hidden" name="id_pegawai" value="<?= $_SESSION['id_pegawai'] ?>">
+                                <input type="hidden" name="time_input" value="<?= date('Y-m-d H:i:s') ?>">
+                                <input type="hidden" name="is_delete" value="0">
 
-                                    <input type="hidden" name="id_program" class="form-control"
-                                        value="<?=$row['id_program'] ?>">
-                                    <!-- Data lama -->
-                                    <input type="hidden" name="program2" class="form-control"
-                                        value="<?=$row['nm_program']?>">
-                                    <input type="hidden" name="is_delete2" class="form-control" value="0">
-                                    <input type="hidden" name="row_edit2" class="form-control"
-                                        value="<?=$row['id_program']?>">
-                                    <input type="hidden" name="id_pegawai2" class="form-control"
-                                        value="<?=$row['creator']?>">
-                                    <input type="hidden" name="time_input2" class="form-control"
-                                        value="<?=date("Y-m-d H:i:s"); ?>">
-                                    <!-- Data Baru -->
-                                    <input type="hidden" name="is_delete" class="form-control" value="0">
-                                    <input type="hidden" name="row_edit" class="form-control"
-                                        value="<?=$row['row_edit']?>">
-                                    <input type="hidden" name="id_pegawai" class="form-control"
-                                        value="<?=$row['creator']?>">
-                                    <input type="hidden" name="time_input" class="form-control"
-                                        value="<?=$row['time_input']?>">
+                                <!-- Nama Program -->
+                                <div class="form-group">
+                                    <label for="program">Nama Program Bantuan:</label>
+                                    <input type="text" class="form-control mt-1" id="program" name="program"
+                                        value="<?= htmlspecialchars($row['nm_program']) ?>" required>
+                                </div>
+                            </div>
 
-
-                                    <div class="form-group">
-                                        <label for="program" class="col-form-label">Nama Program Bantuan:</label>
-                                        <input type="text" class="form-control mt-1" id="program" name="program"
-                                            value="<?=$row['nm_program'] ?>" required>
-                                    </div>
-
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary"
-                                            data-dismiss="modal">Cancel</button>
-                                        <button type="submit" name="edit" class="btn btn-primary">Update</button>
-                                    </div>
-                                </form>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                                <button type="submit" name="edit" class="btn btn-warning">Simpan</button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
+
+
             <?php endforeach; ?>
 
 
