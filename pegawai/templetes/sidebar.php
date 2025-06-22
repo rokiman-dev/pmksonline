@@ -74,29 +74,6 @@
                 PMKS Online
             </div>
 
-            <!-- Nav Item - kategori PMKS -->
-            <li <?php if($page == "kategori") { 
-                echo "class='nav-item active' "; 
-            } else {
-                echo "class='nav-item' ";
-            } ?>>
-                <a class="nav-link" href="kategori.php">
-                    <i class="fab fa-accessible-icon"></i>
-                    <span>Input Data Kategori PMKS</span>
-                </a>
-            </li>
-
-            <!-- Nav Item - program -->
-            <li <?php if($page == "program") { 
-                echo "class='nav-item active' "; 
-            } else {
-                echo "class='nav-item' ";
-            } ?>>
-                <a class="nav-link" href="program.php">
-                    <i class="fas fa-hand-holding-usd"></i>
-                    <span>Input Data Program Bantuan</span>
-                </a>
-            </li>
 
             <!-- Nav Item - program -->
             <!--       <li <?php if($page == "admin") { 
@@ -104,34 +81,6 @@
             } else {
                 echo "class='nav-item' ";
             } ?> >
-
-
-            <!-- Nav Item - wilayah -->
-            <li <?php if($page == "wilayah") { 
-                echo "class='nav-item active' "; 
-            } else {
-                echo "class='nav-item' ";
-            } ?>>
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-                    aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-map-marked-alt"></i>
-                    <span>Input Data Wilayah</span>
-                </a>
-                <div id="collapseTwo" <?php if($page == "wilayah") { 
-                echo "class='collapse show' "; 
-            } else {
-                echo "class='collapse' ";
-            } ?> aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Menu Wilayah :</h6>
-                        <a <?php if($page == "wilayah" AND $page1 == "kecamatan") { 
-              echo "class='collapse-item active' "; 
-            } else {
-              echo "class='collapse-item' ";
-            } ?> href="kecamatan.php">Input Data Kecamatan</a>
-                    </div>
-                </div>
-            </li>
 
             <!-- Nav Item - menu pmks -->
             <li <?php if($page == "pmks") { 
