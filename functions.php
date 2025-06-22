@@ -310,6 +310,8 @@ function editDataPmks($data)
     $no_telepon  = mysqli_real_escape_string($koneksi, $data['no_telepon']);
     $id_kat_pmks = (int) $data['id_kat_pmks'];
     $id_program  = (int) $data['id_program'];
+	$time_input  = $data['time_input'];
+	$status = mysqli_real_escape_string($koneksi, $data['status']);
 
     $query = "UPDATE pmks SET 
                 nm_pmks = '$nm_pmks',
@@ -317,7 +319,9 @@ function editDataPmks($data)
                 id_kec = $id_kec,
                 no_telepon = '$no_telepon',
                 id_kat_pmks = $id_kat_pmks,
-                id_program = $id_program
+                id_program = $id_program,
+				time_input = '$time_input',
+				status = '$status'
               WHERE id_pmks = $id_pmks";
 
     mysqli_query($koneksi, $query);
@@ -355,48 +359,18 @@ function editDataPegawai($data)
 
 	$id_pegawai  = $data["id_pegawai"];
 
-	$nm_pegawai2 = $data["nm_pegawai2"];
-	$nip2 	     = $data["nip2"];
-	$no_telepon2 = $data["no_telepon2"];
-	$alamat2 	 = $data["alamat2"];
-	$username2 	 = $data["username2"];
-	$password2 	 = $data["password2"];
-	$role2 	     = $data["role2"];
-	$is_delete2	 = $data["is_delete2"];
-	$row_edit2 	 = $data["row_edit2"];
-	$time_input2 = $data["time_input2"];
-
 	$nm_pegawai  = htmlspecialchars($data["nm_pegawai"]);
 	$nip 	     = htmlspecialchars($data["nip"]);
 	$no_telepon  = htmlspecialchars($data["no_telepon"]);
 	$alamat	     = htmlspecialchars($data["alamat"]);
 	$username	 = htmlspecialchars($data["username"]);
 
-
-	// echo $id_kec."<br>".$nm_kec."<br>".$is_delete."<br>".$row_edit."<br>".$creator."<br>".$time_input."<br>"; 
-	// echo $id_kec."<br>".$nm_kec2."<br>".$is_delete2."<br>".$row_edit2."<br>".$creator2."<br>".$time_input2."<br>";die;
-
-	// cek kecamatan sudah ada atau belum
-	// $result = mysqli_query($koneksi, "SELECT nip FROM pegawai WHERE nip = '$nip' AND is_delete=1");
-
-	// if (mysqli_fetch_assoc($result)) {
-	// 	echo "<script>
- // 				alert('NIP sudah Ada!')
- // 			  </script>";
-	// 	return false;
-	// }
-
-	$query = "UPDATE pegawai SET 
+$query = "UPDATE pegawai SET 
  				   	 nm_pegawai='$nm_pegawai', nip='$nip',
  				   	 no_telepon='$no_telepon', alamat='$alamat',
  				   	 username='$username' WHERE id_pegawai='$id_pegawai'";
 
 	mysqli_query($koneksi, $query);
-
-	// $query2 = "INSERT INTO pegawai VAlUES ('','$nm_pegawai2','$nip2','$no_telepon2',
-	// 									  '$alamat2', '$username2', '$password2', '$role2',
-	// 									  '$is_delete2','$row_edit2','$time_input2')";
-	// mysqli_query($koneksi, $query2);
 
 	return mysqli_affected_rows($koneksi);
 }

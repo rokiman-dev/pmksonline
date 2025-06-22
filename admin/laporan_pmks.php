@@ -11,19 +11,30 @@ include('templetes/sidebar.php');
 include('templetes/topbar.php');
 require_once "../functions.php";
 
-$jml_DataHalaman = 5;
-$jml_responden = count(query("SELECT id_pmks FROM pmks WHERE is_delete = 0"));
-$jml_Halaman = ceil($jml_responden / $jml_DataHalaman);
+// Ambil filter status dari GET
+$statusFilter = '';
+$statusArr = [];
 
+if (isset($_GET['status']) && is_array($_GET['status'])) {
+    $statusArr = array_map('addslashes', $_GET['status']);
+    $statusStr = "'" . implode("','", $statusArr) . "'";
+    $statusFilter = "AND a.status IN ($statusStr)";
+}
+
+// Pagination setup
+$jml_DataHalaman = 5;
+$jml_responden = count(query("SELECT id_pmks FROM pmks a WHERE a.is_delete = 0 $statusFilter"));
+$jml_Halaman = ceil($jml_responden / $jml_DataHalaman);
 $pageAktif = (isset($_GET["page"])) ? $_GET["page"] : 1;
 $awaldata = ($jml_DataHalaman * $pageAktif) - $jml_DataHalaman;
 
+// Ambil data PMKS dengan filter status
 $pmks = query("SELECT a.*, b.nm_kat AS jenis_akses, c.nm_program AS sub_menu, d.nm_kec AS kecamatan 
                FROM pmks a
                LEFT JOIN kat_pmks b ON a.id_kat_pmks = b.id_kat_pmks
                LEFT JOIN program_bantuan c ON a.id_program = c.id_program
                LEFT JOIN kecamatan d ON a.id_kec = d.id_kec
-               WHERE a.is_delete = 0 
+               WHERE a.is_delete = 0 $statusFilter
                ORDER BY d.nm_kec ASC 
                LIMIT $awaldata, $jml_DataHalaman");
 ?>
@@ -33,10 +44,26 @@ $pmks = query("SELECT a.*, b.nm_kat AS jenis_akses, c.nm_program AS sub_menu, d.
     <h1 class="h3 mb-4 text-judul">Data PMKS Online</h1>
 
     <div class="card shadow mb-2">
-        <div class="card-header py-3">
-            <a href="../cetak_pmks.php" target="_blank" class="btn btn-info"> Cetak</a>
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <!-- Tombol Cetak -->
+            <a href="../cetak_pmks.php?<?= http_build_query(['status' => $statusArr]) ?>" target="_blank"
+                class="btn btn-info">Cetak</a>
+
+
+            <!-- Filter Status -->
+            <form method="GET" class="form-inline">
+                <label class="mr-2 font-weight-bold">Filter Status:</label>
+                <?php
+                $statuses = ['Menunggu', 'Diproses', 'Selesai'];
+                foreach ($statuses as $s) {
+                    $checked = in_array($s, $statusArr) ? 'checked' : '';
+                    echo "<label class='mr-2'><input type='checkbox' name='status[]' value='$s' $checked> $s</label>";
+                }
+                ?>
+                <button type="submit" class="btn btn-sm btn-primary ml-2">Terapkan</button>
+            </form>
         </div>
-        <div class="card-header py-3"></div>
+
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered" width="100%" cellspacing="0">
@@ -66,33 +93,40 @@ $pmks = query("SELECT a.*, b.nm_kat AS jenis_akses, c.nm_program AS sub_menu, d.
                             <td><?= $row['sub_menu']; ?></td>
                             <td><?= date('d-m-Y', strtotime($row['time_input'])); ?></td>
                             <td class="text-center"><?= $row['status']; ?></td>
-
                         </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
 
+                <!-- Pagination -->
                 <nav aria-label="Page navigation example">
                     <ul class="pagination float-right">
                         <?php if ($pageAktif > 1): ?>
-                        <li class="page-item"><a class="page-link" href="?page=<?= $pageAktif - 1; ?>">Previous</a></li>
+                        <li class="page-item">
+                            <a class="page-link"
+                                href="?<?= http_build_query(array_merge($_GET, ['page' => $pageAktif - 1])) ?>">Previous</a>
+                        </li>
                         <?php endif; ?>
 
                         <?php for ($i = 1; $i <= $jml_Halaman; $i++): ?>
                         <li class="page-item <?= ($i == $pageAktif) ? 'active' : '' ?>">
-                            <a class="page-link" href="?page=<?= $i; ?>"><?= $i; ?></a>
+                            <a class="page-link"
+                                href="?<?= http_build_query(array_merge($_GET, ['page' => $i])) ?>"><?= $i; ?></a>
                         </li>
                         <?php endfor; ?>
 
                         <?php if ($pageAktif < $jml_Halaman): ?>
-                        <li class="page-item"><a class="page-link" href="?page=<?= $pageAktif + 1; ?>">Next</a></li>
+                        <li class="page-item">
+                            <a class="page-link"
+                                href="?<?= http_build_query(array_merge($_GET, ['page' => $pageAktif + 1])) ?>">Next</a>
+                        </li>
                         <?php endif; ?>
                     </ul>
                 </nav>
+
             </div>
         </div>
     </div>
 </div>
-<!-- End of Main Content -->
 
 <?php include('templetes/footer.php'); ?>

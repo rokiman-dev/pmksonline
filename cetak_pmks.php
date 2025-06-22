@@ -6,12 +6,20 @@ require_once __DIR__ . '/vendor/autoload.php';
 require_once "functions.php";
 require_once "config.php";
 
+$statusFilter = '';
+if (isset($_GET['status']) && is_array($_GET['status'])) {
+    $statusArr = array_map('addslashes', $_GET['status']);
+    $statusStr = "'" . implode("','", $statusArr) . "'";
+    $statusFilter = "AND a.status IN ($statusStr)";
+}
+
 $pmks = query("SELECT a.*, b.nm_kat AS jenis_akses, c.nm_program AS sub_menu, d.nm_kec AS kecamatan
                FROM pmks a
                LEFT JOIN kat_pmks b ON a.id_kat_pmks = b.id_kat_pmks
                LEFT JOIN program_bantuan c ON a.id_program = c.id_program
                LEFT JOIN kecamatan d ON a.id_kec = d.id_kec
-               WHERE a.is_delete=0 ORDER BY a.time_input DESC");
+               WHERE a.is_delete=0 $statusFilter
+               ORDER BY a.time_input DESC");
 
 $mpdf = new \Mpdf\Mpdf(['format' => 'A4']);
 $data = '

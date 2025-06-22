@@ -31,8 +31,27 @@ $jml_Halaman = ceil($jml_responden / $jml_DataHalaman);
 $pageAktif = (isset($_GET["page"])) ? $_GET["page"] : 1;
 $awaldata = ($jml_DataHalaman * $pageAktif) - $jml_DataHalaman;
 
+$where = "a.is_delete = 0";
+
+if (isset($_GET['status']) && is_array($_GET['status']) && count($_GET['status']) > 0) {
+    $filtered_status = array_map(function ($status) use ($koneksi) {
+        return "'" . mysqli_real_escape_string($koneksi, $status) . "'";
+    }, $_GET['status']);
+    $where .= " AND a.status IN (" . implode(",", $filtered_status) . ")";
+}
+
+$queryTotal = "SELECT COUNT(*) as total FROM pmks a WHERE $where";
+$resultTotal = mysqli_query($koneksi, $queryTotal);
+$totalRow = mysqli_fetch_assoc($resultTotal)['total'];
+$jml_responden = $totalRow;
+$jml_Halaman = ceil($jml_responden / $jml_DataHalaman);
+$awaldata = ($jml_DataHalaman * $pageAktif) - $jml_DataHalaman;
+
 $pmks = query("SELECT 
     a.id_pmks,
+    a.id_kec,
+    a.id_kat_pmks,
+    a.id_program,
     a.nm_pmks,
     a.alamat,
     d.nm_kec AS kecamatan,
@@ -42,14 +61,15 @@ $pmks = query("SELECT
     a.time_input AS tanggal_akses,
     a.status,
     e.nm_pegawai AS petugas_layanan
-  FROM pmks a
-  LEFT JOIN kat_pmks b ON a.id_kat_pmks = b.id_kat_pmks
-  LEFT JOIN program_bantuan c ON a.id_program = c.id_program
-  LEFT JOIN kecamatan d ON a.id_kec = d.id_kec
-  LEFT JOIN pegawai e ON a.creator = e.id_pegawai
-  WHERE a.is_delete = 0
-  ORDER BY a.id_pmks DESC
-  LIMIT $awaldata, $jml_DataHalaman");
+FROM pmks a
+LEFT JOIN kat_pmks b ON a.id_kat_pmks = b.id_kat_pmks
+LEFT JOIN program_bantuan c ON a.id_program = c.id_program
+LEFT JOIN kecamatan d ON a.id_kec = d.id_kec
+LEFT JOIN pegawai e ON a.creator = e.id_pegawai
+WHERE $where
+ORDER BY a.id_pmks DESC
+LIMIT $awaldata, $jml_DataHalaman");
+
 
 if (isset($_POST["hapus"])) {
     if (hapusDataPmks($_POST) > 0) {
@@ -87,12 +107,33 @@ if (isset($_POST['edit'])) {
     <h1 class="h3 mb-4 text-judul">Data PMKS</h1>
 
     <div class="card shadow mb-2">
-        <div class="card-header py-3">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalTambah">
                 Tambah PMKS
             </button>
+
+            <!-- Filter Status -->
+            <form method="GET" class="mb-3">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" name="status[]" value="Menunggu"
+                        <?= (isset($_GET['status']) && in_array("Menunggu", $_GET['status'])) ? 'checked' : ''; ?>>
+                    <label class="form-check-label">Menunggu</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" name="status[]" value="Diproses"
+                        <?= (isset($_GET['status']) && in_array("Diproses", $_GET['status'])) ? 'checked' : ''; ?>>
+                    <label class="form-check-label">Diproses</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" name="status[]" value="Selesai"
+                        <?= (isset($_GET['status']) && in_array("Selesai", $_GET['status'])) ? 'checked' : ''; ?>>
+                    <label class="form-check-label">Selesai</label>
+                </div>
+                <button type="submit" class="btn btn-sm btn-primary ml-2">Terapkan</button>
+            </form>
         </div>
         <div class="card-body">
+
             <div class="table-responsive">
                 <table class="table table-bordered" width="100%" cellspacing="0">
                     <thead class="table-dark">
@@ -106,6 +147,7 @@ if (isset($_POST['edit'])) {
                             <th class="text-center">Sub Menu</th>
                             <th class="text-center">Tanggal Akses</th>
                             <th class="text-center">Status</th>
+                            <th class="text-center">Petugas Layanan</th>
                             <th class="text-center">Aksi</th>
                         </tr>
                     </thead>
@@ -134,6 +176,7 @@ if (isset($_POST['edit'])) {
                                     <?= $status; ?>
                                 </span>
                             </td>
+                            <td><?= $row['petugas_layanan']; ?></td>
 
                             <!-- Kolom Tombol Aksi -->
                             <td class="text-center">
@@ -217,6 +260,32 @@ if (isset($_POST['edit'])) {
               }
               ?>
                                                 </select>
+
+                                                <label>Tanggal Akses</label>
+                                                <input type="hidden" name="time_input"
+                                                    value="<?= date('Y-m-d H:i:s') ?>">
+                                                <input type="text" class="form-control"
+                                                    value="<?= date('Y-m-d H:i:s') ?>" disabled>
+                                                <label>Status</label>
+                                                <select name="status" class="form-control" required>
+                                                    <option value="Menunggu"
+                                                        <?= ($row['status'] == 'Menunggu') ? 'selected' : '' ?>>Menunggu
+                                                    </option>
+                                                    <option value="Diproses"
+                                                        <?= ($row['status'] == 'Diproses') ? 'selected' : '' ?>>
+                                                        Diproses</option>
+                                                    <option value="Selesai"
+                                                        <?= ($row['status'] == 'Selesai') ? 'selected' : '' ?>>Selesai
+                                                    </option>
+                                                </select>
+
+                                                <?php
+                        $id_pegawai = $_SESSION['id_pegawai'];
+                        $pegawai = query("SELECT nm_pegawai FROM pegawai WHERE id_pegawai = $id_pegawai")[0];
+                        ?>
+                                                <label>Petugas Layanan</label>
+                                                <input type="text" class="form-control"
+                                                    value="<?= $row['petugas_layanan']; ?>" readonly>
                                             </div>
                                         </div>
 
@@ -272,21 +341,37 @@ if (isset($_POST['edit'])) {
                 </table>
 
                 <!-- Pagination -->
+                <?php
+// query string tambahan dari checkbox status
+$statusQuery = '';
+if (isset($_GET['status']) && is_array($_GET['status'])) {
+    foreach ($_GET['status'] as $s) {
+        $statusQuery .= '&status[]=' . urlencode($s);
+    }
+}
+?>
                 <nav aria-label="Page navigation">
                     <ul class="pagination justify-content-end">
-                        <?php if ($pageAktif > 1) : ?>
-                        <li class="page-item"><a class="page-link" href="?page=<?= $pageAktif - 1; ?>">Previous</a></li>
+                        <?php if ($pageAktif > 1): ?>
+                        <li class="page-item">
+                            <a class="page-link" href="?page=<?= $pageAktif - 1 . $statusQuery ?>">Previous</a>
+                        </li>
                         <?php endif; ?>
-                        <?php for ($i = 1; $i <= $jml_Halaman; $i++) : ?>
+
+                        <?php for ($i = 1; $i <= $jml_Halaman; $i++): ?>
                         <li class="page-item <?= ($i == $pageAktif) ? 'active' : ''; ?>">
-                            <a class="page-link" href="?page=<?= $i; ?>"><?= $i; ?></a>
+                            <a class="page-link" href="?page=<?= $i . $statusQuery ?>"><?= $i; ?></a>
                         </li>
                         <?php endfor; ?>
-                        <?php if ($pageAktif < $jml_Halaman) : ?>
-                        <li class="page-item"><a class="page-link" href="?page=<?= $pageAktif + 1; ?>">Next</a></li>
+
+                        <?php if ($pageAktif < $jml_Halaman): ?>
+                        <li class="page-item">
+                            <a class="page-link" href="?page=<?= $pageAktif + 1 . $statusQuery ?>">Next</a>
+                        </li>
                         <?php endif; ?>
                     </ul>
                 </nav>
+
 
             </div>
         </div>
@@ -316,11 +401,11 @@ if (isset($_POST['edit'])) {
                         <select name="id_kec" class="form-control" required>
                             <option value="">-- Pilih Kecamatan --</option>
                             <?php
-              $kecamatan = query("SELECT * FROM kecamatan WHERE is_delete = 0");
-              foreach ($kecamatan as $kec) {
-                  echo "<option value='{$kec['id_kec']}'>{$kec['nm_kec']}</option>";
-              }
-              ?>
+                            $kecamatan = query("SELECT * FROM kecamatan WHERE is_delete = 0");
+                            foreach ($kecamatan as $kec) {
+                                echo "<option value='{$kec['id_kec']}'>{$kec['nm_kec']}</option>";
+                            }
+                            ?>
                         </select>
 
                         <label>No Telepon</label>
@@ -330,29 +415,42 @@ if (isset($_POST['edit'])) {
                         <select name="id_kat_pmks" class="form-control" required>
                             <option value="">-- Pilih Jenis Akses --</option>
                             <?php
-              $kat = query("SELECT * FROM kat_pmks WHERE is_delete = 0");
-              foreach ($kat as $k) {
-                  echo "<option value='{$k['id_kat_pmks']}'>{$k['nm_kat']}</option>";
-              }
-              ?>
+                            $kat = query("SELECT * FROM kat_pmks WHERE is_delete = 0");
+                            foreach ($kat as $k) {
+                                echo "<option value='{$k['id_kat_pmks']}'>{$k['nm_kat']}</option>";
+                            }
+                            ?>
                         </select>
 
                         <label>Sub Menu</label>
                         <select name="id_program" class="form-control" required>
                             <option value="">-- Pilih Program Bantuan --</option>
                             <?php
-              $prog = query("SELECT * FROM program_bantuan WHERE is_delete = 0");
-              foreach ($prog as $p) {
-                  echo "<option value='{$p['id_program']}'>{$p['nm_program']}</option>";
-              }
-              ?>
+                            $prog = query("SELECT * FROM program_bantuan WHERE is_delete = 0");
+                            foreach ($prog as $p) {
+                                echo "<option value='{$p['id_program']}'>{$p['nm_program']}</option>";
+                            }
+                            ?>
                         </select>
 
+                        <!-- Petugas Layanan -->
+                        <?php
+                        $id_pegawai = $_SESSION['id_pegawai'];
+                        $pegawai = query("SELECT nm_pegawai FROM pegawai WHERE id_pegawai = $id_pegawai")[0];
+                        ?>
+
                         <!-- Hidden input -->
-                        <input type="hidden" name="id_pegawai" value="<?= $_SESSION['id_pegawai'] ?>">
+                        <input type="hidden" name="id_pegawai" value="<?= $id_pegawai ?>">
+                        <label>Tanggal Akses</label>
+                        <input disabled name="time_input" value="<?= date('Y-m-d H:i:s') ?>" class="form-control">
                         <input type="hidden" name="time_input" value="<?= date('Y-m-d H:i:s') ?>">
                         <input type="hidden" name="is_delete" value="0">
+                        <label>Status</label>
+                        <input disabled name="status" value="Menunggu" class="form-control">
                         <input type="hidden" name="status" value="Menunggu">
+
+                        <label>Petugas Layanan</label>
+                        <input type="text" class="form-control" value="<?= $pegawai['nm_pegawai'] ?>" readonly>
                     </div>
                 </div>
 
@@ -364,7 +462,6 @@ if (isset($_POST['edit'])) {
         </div>
     </div>
 </div>
-
 
 </div>
 
