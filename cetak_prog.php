@@ -4,11 +4,32 @@ require_once __DIR__ . '/vendor/autoload.php';
 require_once "functions.php";
 require_once "config.php";
 
+// Fungsi aman untuk encode gambar ke base64
+function imageToBase64($path) {
+    if (file_exists($path)) {
+        $data = file_get_contents($path);
+        if ($data !== false) {
+            $ext = pathinfo($path, PATHINFO_EXTENSION);
+            return 'data:image/' . $ext . ';base64,' . base64_encode($data);
+        }
+    }
+    return '';
+}
+
  $kec=query("SELECT * FROM kecamatan WHERE is_delete=0 AND nm_kec!='Tidak Ada'ORDER BY nm_kec ASC");
 
 $prog=query("SELECT * FROM program_bantuan WHERE is_delete=0 ORDER By nm_program ASC");
 $jml_prog = count($prog);
 
+
+// Load logo sebagai base64
+$logoPmks = imageToBase64(__DIR__ . '/assets/img/logo-cetak.jpg');
+$logoBlank = imageToBase64(__DIR__ . '/assets/img/logo-blank.png');
+
+// Debug jika logo tidak ditemukan
+if (empty($logoPmks)) {
+    file_put_contents('debug_logo.txt', "Logo PMKS gagal dimuat dari: " . __DIR__ . '/assets/img/logo-cetak.jpg');
+}
 
 $mpdf = new \Mpdf\Mpdf(['format' => 'A4']);
 $data = '
@@ -20,8 +41,10 @@ $data = '
 <body>
    <table margin="auto">
       <tr>
-         <td width="20%"><img src="assets/img/pmks.png" width="100px" height="100px"></td>
-         <td width="85%">
+         <td width="22.5%" style="text-align: right; padding-right: 10px;">
+   <img src="' . $logoPmks . '" width="100px" height="100px">
+</td>
+         <td width="55%">
          <center>
             <font size="5"><b>PEMERINTAH KABUPATEN TEGAL<b></font><br>
             <font size="5"><b>JAWA TENGAH<b></font><br>
@@ -29,7 +52,7 @@ $data = '
             <font size="3">Fax. (0234) 272797 Kode Pos 45212 E-mail dinsoskabtegal@tegalkab.go.id</font><br>
          </center>
          </td>
-         <td width="20%"><img src="assets/img/logo-blank.png" alt="logo-umc" width="100px" height="100px"></td>
+         <td width="22.5%" style="padding-right:10px;"><img src="' . $logoBlank . '" width="100px" height="100px"></td> 
       </tr>
       <tr>
          <td colspan="3"><hr></td>

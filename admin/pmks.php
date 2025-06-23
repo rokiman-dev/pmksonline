@@ -264,8 +264,8 @@ if (isset($_POST['edit'])) {
                                                 <label>Tanggal Akses</label>
                                                 <input type="hidden" name="time_input"
                                                     value="<?= date('Y-m-d H:i:s') ?>">
-                                                <input type="text" class="form-control"
-                                                    value="<?= date('Y-m-d H:i:s') ?>" disabled>
+                                                <input type="text" class="form-control" value="<?= date('Y-m-d') ?>"
+                                                    disabled>
                                                 <label>Status</label>
                                                 <select name="status" class="form-control" required>
                                                     <option value="Menunggu"
@@ -442,7 +442,7 @@ if (isset($_GET['status']) && is_array($_GET['status'])) {
                         <!-- Hidden input -->
                         <input type="hidden" name="id_pegawai" value="<?= $id_pegawai ?>">
                         <label>Tanggal Akses</label>
-                        <input disabled name="time_input" value="<?= date('Y-m-d H:i:s') ?>" class="form-control">
+                        <input disabled name="time_input" value="<?= date('Y-m-d') ?>" class="form-control">
                         <input type="hidden" name="time_input" value="<?= date('Y-m-d H:i:s') ?>">
                         <input type="hidden" name="is_delete" value="0">
                         <label>Status</label>
