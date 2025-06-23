@@ -250,8 +250,13 @@ if (isset($_POST['edit'])) {
                                                         value="<?= date('Y-m-d H:i:s') ?>">
                                                     <input type="text" class="form-control"
                                                         value="<?= date('Y-m-d H:i:s') ?>" disabled>
+
                                                     <label>Status</label>
-                                                    <input disabled name="status" value="Menunggu" class="form-control">
+                                                    <input type="text" class="form-control"
+                                                        value="<?= $row['status']; ?>" readonly>
+                                                    <input type="hidden" name="status" value="<?= $row['status']; ?>">
+
+                                                    <!-- Petugas Layanan -->
                                                     <?php
                         $id_pegawai = $_SESSION['id_pegawai'];
                         $pegawai = query("SELECT nm_pegawai FROM pegawai WHERE id_pegawai = $id_pegawai")[0];
@@ -370,10 +375,17 @@ if (isset($_GET['status']) && is_array($_GET['status'])) {
                         </select>
 
                         <!-- Hidden input -->
-                        <input type="hidden" name="id_pegawai" value="<?= $_SESSION['id_pegawai'] ?>">
+                        <input type="hidden" name="id_pegawai" value="<?= $id_pegawai ?>">
+                        <label>Tanggal Akses</label>
+                        <input disabled name="time_input" value="<?= date('Y-m-d H:i:s') ?>" class="form-control">
                         <input type="hidden" name="time_input" value="<?= date('Y-m-d H:i:s') ?>">
                         <input type="hidden" name="is_delete" value="0">
+                        <label>Status</label>
+                        <input disabled name="status" value="Menunggu" class="form-control">
                         <input type="hidden" name="status" value="Menunggu">
+
+                        <label>Petugas Layanan</label>
+                        <input type="text" class="form-control" value="<?= $pegawai['nm_pegawai'] ?>" readonly>
                     </div>
                 </div>
 
