@@ -139,7 +139,7 @@ if (!isset($_SESSION["Admin"])){
                             <div class="h5 mb-0 font-weight-bold text-gray-800"><?=$jml_pmks?> PMKS</div>
                         </div>
                         <div class="col-auto">
-                            <a href="laporan.php">
+                            <a href="pmks.php">
                                 <i class="fas fa-book fa-2x text-gray-300"></i>
                             </a>
                         </div>
